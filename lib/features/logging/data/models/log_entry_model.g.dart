@@ -6,7 +6,8 @@ part of 'log_entry_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-LogEntryModel _$LogEntryModelFromJson(Map<String, dynamic> json) => LogEntryModel(
+LogEntryModel _$LogEntryModelFromJson(Map<String, dynamic> json) =>
+    LogEntryModel(
       json['id'] as String,
       DateTime.parse(json['timestamp'] as String),
       json['message'] as String,
@@ -20,7 +21,8 @@ LogEntryModel _$LogEntryModelFromJson(Map<String, dynamic> json) => LogEntryMode
       json['sessionId'] as String?,
     );
 
-Map<String, dynamic> _$LogEntryModelToJson(LogEntryModel instance) => <String, dynamic>{
+Map<String, dynamic> _$LogEntryModelToJson(LogEntryModel instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'timestamp': instance.timestamp.toIso8601String(),
       'message': instance.message,

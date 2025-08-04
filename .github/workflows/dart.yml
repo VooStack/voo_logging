@@ -35,9 +35,6 @@ jobs:
         run: flutter pub get
         working-directory: ./example
 
-      - name: Install extension dependencies
-        run: flutter pub get
-        working-directory: ./extension/devtools
 
       # Uncomment this step to verify the use of 'dart format' on each commit.
       # - name: Verify formatting
@@ -51,9 +48,6 @@ jobs:
         run: flutter analyze
         working-directory: ./example
 
-      - name: Analyze extension source
-        run: flutter analyze
-        working-directory: ./extension/devtools
 
       # Run tests if they exist
       - name: Check if main package has tests
@@ -69,20 +63,6 @@ jobs:
         if: steps.check_tests.outputs.has_tests == 'true'
         run: flutter test
 
-      - name: Check if extension has tests
-        id: check_extension_tests
-        run: |
-          if [ -d "test" ]; then
-            echo "has_tests=true" >> $GITHUB_OUTPUT
-          else
-            echo "has_tests=false" >> $GITHUB_OUTPUT
-          fi
-        working-directory: ./extension/devtools
-
-      - name: Run extension tests
-        if: steps.check_extension_tests.outputs.has_tests == 'true'
-        run: flutter test
-        working-directory: ./extension/devtools
 
       - name: Run example tests
         run: flutter test

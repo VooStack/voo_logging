@@ -1,8 +1,8 @@
 # Testing Voo Logging with DevTools
 
-## Running the Example
+## Quick Start
 
-1. **Install dependencies** (in the root directory):
+1. **Install dependencies**:
    ```bash
    flutter pub get
    ```
@@ -10,13 +10,13 @@
 2. **Run the example app**:
    ```bash
    cd example
-   flutter run
+   flutter run -d chrome
    ```
 
 3. **Open DevTools**:
    - Press `c` in the terminal where Flutter is running to open DevTools
    - Or run: `flutter pub global run devtools`
-   - Navigate to the "Voo Logger" tab
+   - The Voo Logger functionality is integrated into the main package
 
 ## Fixed Issues
 
@@ -54,7 +54,8 @@
 
 ## Troubleshooting
 
-If the DevTools tab doesn't appear:
+If you're having issues with DevTools:
 1. Make sure you're running the latest Flutter version
 2. Try closing and reopening DevTools
-3. Check that the extension was built successfully in `devtools_extension/build/web/`
+3. Ensure you're running the app in Chrome (`flutter run -d chrome`)
+4. Check the console for any error messages

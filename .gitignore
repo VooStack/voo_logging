@@ -25,6 +25,3 @@ doc/api/
 
 .flutter-plugins
 .flutter-plugins-dependencies
-
-# DevTools extension build output
-devtools_extensions/
