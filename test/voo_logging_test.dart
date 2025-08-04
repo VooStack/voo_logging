@@ -1,5 +1,4 @@
 import 'package:test/test.dart';
-import 'package:voo_logging/src/domain/enums/log_level.dart';
 import 'package:voo_logging/voo_logging.dart';
 
 void main() {

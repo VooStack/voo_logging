@@ -1,18 +1,11 @@
-library;
+library voo_logging;
 
-// Domain layer exports
-// Enums
-export 'src/domain/enums/log_level.dart';
+/// Voo Logging Package
+/// A comprehensive logging solution with DevTools integration
 
-// Entities
-export 'src/domain/entities/log_entry.dart';
-export 'src/domain/entities/log_filter.dart';
-export 'src/domain/entities/log_statistics.dart';
-export 'src/domain/entities/logger_context.dart';
-export 'src/domain/entities/voo_logger.dart';
-
-// Value Objects
-export 'src/domain/value_objects/log_level_color.dart';
-
-// Extensions
-export 'src/domain/extensions/log_level_extensions.dart';
+// Core exports - shared across all features
+export 'core/core.dart';
+// DevTools extension exports (optional)
+export 'features/devtools_extension/devtools_extension.dart' show VooLoggerDevToolsExtension;
+// Logging feature exports - main logging functionality
+export 'features/logging/logging.dart';
