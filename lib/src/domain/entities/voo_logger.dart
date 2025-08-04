@@ -121,7 +121,6 @@ class VooLogger {
         name: 'AwesomeLogger',
         level: 1000, // Error level
       );
-      return <String, Object?>{};
     });
 
     // Send to DevTools extension if available

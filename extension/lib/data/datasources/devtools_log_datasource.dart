@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as developer;
 
 import 'package:voo_logger_devtools/data/models/log_entry_model.dart';
 import 'package:voo_logger_devtools/domain/entities/log_entry.dart';
@@ -22,21 +23,18 @@ class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {
     _listenToExtensionEvents();
   }
 
-  void _listenToExtensionEvents() {
-    // Listen to events from the main app's VooLogger using the DevTools API
-    // This would typically use the DevTools VM service connection
-    // For now, we'll simulate receiving logs for testing
+  Future<void> _listenToExtensionEvents() async {
+    try {
+      // For now, let's use a simplified approach
+      // In a real implementation, this would connect to the VM service
+      // through the DevTools extension API
 
-    // In a real implementation, you would:
-    // 1. Connect to the VM service
-    // 2. Listen to the 'voo_logger.log' extension events
-    // 3. Parse and add the logs to the stream
+      developer.log('DevTools extension listening for logs...');
 
-    // Simulate some test logs for demonstration
-    Future.delayed(const Duration(seconds: 1), () {
+      // Send initial connection log
       _addLog(
         LogEntryModel(
-          id: '1',
+          id: 'devtools_init',
           timestamp: DateTime.now(),
           message: 'DevTools extension connected successfully',
           level: LogLevel.info,
@@ -44,7 +42,9 @@ class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {
           tag: 'DevTools',
         ),
       );
-    });
+    } catch (e) {
+      developer.log('Error connecting to VM service: $e');
+    }
   }
 
   void _addLog(LogEntryModel log) {

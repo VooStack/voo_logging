@@ -1,8 +1,66 @@
-launcher_icon:
-	dart run icons_launcher:create --path icons_launcher.yaml
-
-build_runner:
+ build_runner:
 	dart run build_runner build --delete-conflicting-outputs
 
 lint_fix:
 	dart fix --apply && dart format --set-exit-if-changed .
+
+# DevTools Extension Commands
+build_extension:
+	@echo "Building DevTools extension..."
+	cd extension && flutter build web
+
+copy_extension:
+	@echo "Copying extension to devtools directory..."
+	cd extension && dart run devtools_extensions build_and_copy --source=. --dest=. || true
+
+validate_extension:
+	@echo "Validating DevTools extension..."
+	cd extension && dart run devtools_extensions validate --package=..
+
+# Build and deploy extension in one command
+deploy_extension: build_extension copy_extension validate_extension
+	@echo "DevTools extension deployed successfully!"
+
+# All-in-one command to prepare DevTools extension
+prepare_devtools:
+	@echo "================================================="
+	@echo "Preparing Voo Logger DevTools Extension"
+	@echo "================================================="
+	@echo ""
+	@echo "Step 1: Cleaning previous builds..."
+	@cd extension && flutter clean
+	@echo ""
+	@echo "Step 2: Getting dependencies..."
+	@cd extension && flutter pub get
+	@echo ""
+	@echo "Step 3: Building extension..."
+	@cd extension && flutter build web --no-tree-shake-icons
+	@echo ""
+	@echo "Step 4: Copying to devtools directory..."
+	@cd extension && dart run devtools_extensions build_and_copy --source=. --dest=. || true
+	@echo ""
+	@echo "Step 5: Validating extension..."
+	@cd extension && dart run devtools_extensions validate --package=..
+	@echo ""
+	@echo "================================================="
+	@echo "✅ DevTools extension is ready!"
+	@echo "================================================="
+	@echo ""
+	@echo "To use the extension:"
+	@echo "1. Run your app: cd example && flutter run -d chrome"
+	@echo "2. Open DevTools"
+	@echo "3. Go to Extensions tab"
+	@echo "4. Enable 'voo_logging'"
+	@echo "5. The 'Voo Logger' tab will appear"
+	@echo ""
+
+# Run example with DevTools
+run_with_devtools:
+	@echo "Running example app with DevTools..."
+	cd example && flutter run -d chrome --dart-define=flutter.inspector.structuredErrors=true
+
+# Clean all build artifacts
+clean_all:
+	flutter clean
+	cd extension && flutter clean
+	cd example && flutter clean

@@ -88,14 +88,14 @@ class LocalLogStorage {
 
     if (existingVersion == null) {
       // First time setup
-      await _metadataStore.record('schema_version').put(db, 1 as Map<String, Object?>);
-      await _metadataStore.record('created_at').put(db, DateTime.now().toIso8601String() as Map<String, Object?>);
+      await _metadataStore.record('schema_version').put(db, {'version': 1});
+      await _metadataStore.record('created_at').put(db, {'timestamp': DateTime.now().toIso8601String()});
     }
   }
 
   /// Insert a single log entry
   /// Why auto-increment key? Sembast handles unique IDs for us
-  Future<Map<String, Object?>> insertLog(LogEntry entry) async {
+  Future<void> insertLog(LogEntry entry) async {
     final db = await database;
 
     // Convert to Map and add auto-generated timestamp key for sorting
@@ -105,7 +105,7 @@ class LocalLogStorage {
     // Add microseconds to handle multiple logs in same millisecond
     final key = entry.timestamp.millisecondsSinceEpoch * 1000 + entry.timestamp.microsecond;
 
-    return _logsStore.record(key).put(db, data);
+    await _logsStore.record(key).put(db, data);
   }
 
   /// Batch insert multiple log entries
