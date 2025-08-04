@@ -3,7 +3,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Dart
+name: Flutter Package CI
 
 on:
   push:
@@ -26,7 +26,6 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.28.0'
           channel: 'stable'
 
       - name: Install dependencies
@@ -48,10 +47,18 @@ jobs:
         run: flutter analyze
         working-directory: ./example
 
-      # Your project will need to have tests in test/ and a dependency on
-      # package:test for this step to succeed. Note that Flutter projects will
-      # want to change this to 'flutter test'.
+      # Run tests if they exist
+      - name: Check if main package has tests
+        id: check_tests
+        run: |
+          if [ -d "test" ]; then
+            echo "has_tests=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_tests=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Run tests
+        if: steps.check_tests.outputs.has_tests == 'true'
         run: flutter test
 
       - name: Run example tests
