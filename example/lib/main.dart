@@ -5,12 +5,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize VooLogger
-  await VooLogger.initialize(
-    minimumLevel: LogLevel.verbose,
-    appName: 'Voo Logging Example',
-    appVersion: '1.0.0',
-    userId: 'user123',
-  );
+  await VooLogger.initialize(appName: 'Voo Logging Example', appVersion: '1.0.0', userId: 'user123');
 
   runApp(const MyApp());
 }
@@ -19,16 +14,11 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Voo Logging Example',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const LoggingExamplePage(),
-    );
-  }
+  Widget build(BuildContext context) => MaterialApp(
+    title: 'Voo Logging Example',
+    theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple), useMaterial3: true),
+    home: const LoggingExamplePage(),
+  );
 }
 
 class LoggingExamplePage extends StatefulWidget {
@@ -43,21 +33,8 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
   String _selectedLevel = 'info';
   String _selectedCategory = 'General';
 
-  final List<String> _logLevels = [
-    'verbose',
-    'debug',
-    'info',
-    'warning',
-    'error',
-    'fatal',
-  ];
-  final List<String> _categories = [
-    'General',
-    'Network',
-    'Database',
-    'UI',
-    'Analytics',
-  ];
+  final List<String> _logLevels = ['verbose', 'debug', 'info', 'warning', 'error', 'fatal'];
+  final List<String> _categories = ['General', 'Network', 'Database', 'UI', 'Analytics'];
 
   @override
   void dispose() {
@@ -66,281 +43,190 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Voo Logging Example'),
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(backgroundColor: Theme.of(context).colorScheme.inversePrimary, title: const Text('Voo Logging Example')),
+    body: SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildCustomLogSection(),
+          const SizedBox(height: 24),
+          _buildQuickActionsSection(),
+          const SizedBox(height: 24),
+          _buildScenarioSection(),
+          const SizedBox(height: 24),
+          _buildLogManagementSection(),
+        ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildCustomLogSection(),
-            const SizedBox(height: 24),
-            _buildQuickActionsSection(),
-            const SizedBox(height: 24),
-            _buildScenarioSection(),
-            const SizedBox(height: 24),
-            _buildLogManagementSection(),
-          ],
-        ),
-      ),
-    );
-  }
+    ),
+  );
 
-  Widget _buildCustomLogSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Custom Log Entry',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _messageController,
-              decoration: const InputDecoration(
-                labelText: 'Log Message',
-                border: OutlineInputBorder(),
-                hintText: 'Enter your log message',
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    value: _selectedLevel,
-                    decoration: const InputDecoration(
-                      labelText: 'Log Level',
-                      border: OutlineInputBorder(),
-                    ),
-                    items: _logLevels.map((level) {
-                      return DropdownMenuItem(
-                        value: level,
-                        child: Text(level.toUpperCase()),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedLevel = value!;
-                      });
-                    },
-                  ),
+  Widget _buildCustomLogSection() => Card(
+    child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Custom Log Entry', style: Theme.of(context).textTheme.headlineSmall),
+          const SizedBox(height: 16),
+          TextField(
+            controller: _messageController,
+            decoration: const InputDecoration(labelText: 'Log Message', border: OutlineInputBorder(), hintText: 'Enter your log message'),
+            maxLines: 3,
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: DropdownButtonFormField<String>(
+                  value: _selectedLevel,
+                  decoration: const InputDecoration(labelText: 'Log Level', border: OutlineInputBorder()),
+                  items: _logLevels.map((level) => DropdownMenuItem(value: level, child: Text(level.toUpperCase()))).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedLevel = value!;
+                    });
+                  },
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    value: _selectedCategory,
-                    decoration: const InputDecoration(
-                      labelText: 'Category',
-                      border: OutlineInputBorder(),
-                    ),
-                    items: _categories.map((category) {
-                      return DropdownMenuItem(
-                        value: category,
-                        child: Text(category),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedCategory = value!;
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: _logCustomMessage,
-                icon: const Icon(Icons.send),
-                label: const Text('Send Log'),
               ),
-            ),
-          ],
-        ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: DropdownButtonFormField<String>(
+                  value: _selectedCategory,
+                  decoration: const InputDecoration(labelText: 'Category', border: OutlineInputBorder()),
+                  items: _categories.map((category) => DropdownMenuItem(value: category, child: Text(category))).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedCategory = value!;
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(onPressed: _logCustomMessage, icon: const Icon(Icons.send), label: const Text('Send Log')),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
 
-  Widget _buildQuickActionsSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Quick Log Actions',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                ElevatedButton(
-                  onPressed: () => _quickLog(LogLevel.verbose),
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
-                  child: const Text('Verbose'),
-                ),
-                ElevatedButton(
-                  onPressed: () => _quickLog(LogLevel.debug),
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-                  child: const Text('Debug'),
-                ),
-                ElevatedButton(
-                  onPressed: () => _quickLog(LogLevel.info),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                  ),
-                  child: const Text('Info'),
-                ),
-                ElevatedButton(
-                  onPressed: () => _quickLog(LogLevel.warning),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
-                  ),
-                  child: const Text('Warning'),
-                ),
-                ElevatedButton(
-                  onPressed: () => _quickLog(LogLevel.error),
+  Widget _buildQuickActionsSection() => Card(
+    child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Quick Log Actions', style: Theme.of(context).textTheme.headlineSmall),
+          const SizedBox(height: 16),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              ElevatedButton(
+                onPressed: () => _quickLog(LogLevel.verbose),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+                child: const Text('Verbose'),
+              ),
+              ElevatedButton(
+                onPressed: () => _quickLog(LogLevel.debug),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+                child: const Text('Debug'),
+              ),
+              ElevatedButton(
+                onPressed: () => _quickLog(LogLevel.info),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                child: const Text('Info'),
+              ),
+              ElevatedButton(
+                onPressed: () => _quickLog(LogLevel.warning),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+                child: const Text('Warning'),
+              ),
+              ElevatedButton(
+                onPressed: () => _quickLog(LogLevel.error),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                child: const Text('Error'),
+              ),
+              ElevatedButton(
+                onPressed: () => _quickLog(LogLevel.fatal),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.purple),
+                child: const Text('Fatal'),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+
+  Widget _buildScenarioSection() => Card(
+    child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Common Scenarios', style: Theme.of(context).textTheme.headlineSmall),
+          const SizedBox(height: 16),
+          ListTile(leading: const Icon(Icons.network_wifi), title: const Text('Simulate Network Request'), onTap: _simulateNetworkRequest),
+          ListTile(leading: const Icon(Icons.person), title: const Text('Log User Action'), onTap: _logUserAction),
+          ListTile(leading: const Icon(Icons.error_outline), title: const Text('Simulate Error'), onTap: _simulateError),
+          ListTile(leading: const Icon(Icons.speed), title: const Text('Log Performance Metric'), onTap: _logPerformance),
+          ListTile(leading: const Icon(Icons.bug_report), title: const Text('Generate Multiple Logs'), onTap: _generateMultipleLogs),
+        ],
+      ),
+    ),
+  );
+
+  Widget _buildLogManagementSection() => Card(
+    child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Log Management', style: Theme.of(context).textTheme.headlineSmall),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton.icon(onPressed: _viewStatistics, icon: const Icon(Icons.bar_chart), label: const Text('View Statistics')),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: ElevatedButton.icon(onPressed: _exportLogs, icon: const Icon(Icons.download), label: const Text('Export Logs')),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: _clearLogs,
+                  icon: const Icon(Icons.clear),
+                  label: const Text('Clear Logs'),
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                  child: const Text('Error'),
                 ),
-                ElevatedButton(
-                  onPressed: () => _quickLog(LogLevel.fatal),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple,
-                  ),
-                  child: const Text('Fatal'),
-                ),
-              ],
-            ),
-          ],
-        ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: ElevatedButton.icon(onPressed: _changeUser, icon: const Icon(Icons.person_outline), label: const Text('Change User')),
+              ),
+            ],
+          ),
+        ],
       ),
-    );
-  }
-
-  Widget _buildScenarioSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Common Scenarios',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 16),
-            ListTile(
-              leading: const Icon(Icons.network_wifi),
-              title: const Text('Simulate Network Request'),
-              onTap: _simulateNetworkRequest,
-            ),
-            ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text('Log User Action'),
-              onTap: _logUserAction,
-            ),
-            ListTile(
-              leading: const Icon(Icons.error_outline),
-              title: const Text('Simulate Error'),
-              onTap: _simulateError,
-            ),
-            ListTile(
-              leading: const Icon(Icons.speed),
-              title: const Text('Log Performance Metric'),
-              onTap: _logPerformance,
-            ),
-            ListTile(
-              leading: const Icon(Icons.bug_report),
-              title: const Text('Generate Multiple Logs'),
-              onTap: _generateMultipleLogs,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLogManagementSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Log Management',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: _viewStatistics,
-                    icon: const Icon(Icons.bar_chart),
-                    label: const Text('View Statistics'),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: _exportLogs,
-                    icon: const Icon(Icons.download),
-                    label: const Text('Export Logs'),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: _clearLogs,
-                    icon: const Icon(Icons.clear),
-                    label: const Text('Clear Logs'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: _changeUser,
-                    icon: const Icon(Icons.person_outline),
-                    label: const Text('Change User'),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+    ),
+  );
 
   void _logCustomMessage() {
     final message = _messageController.text.trim();
     if (message.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Please enter a message')));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please enter a message')));
       return;
     }
 
@@ -351,10 +237,7 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
       level: level,
       category: _selectedCategory,
       tag: 'CustomLog',
-      metadata: {
-        'source': 'manual_input',
-        'timestamp': DateTime.now().toIso8601String(),
-      },
+      metadata: {'source': 'manual_input', 'timestamp': DateTime.now().toIso8601String()},
     );
 
     _messageController.clear();
@@ -363,8 +246,7 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
 
   void _quickLog(LogLevel level) {
     final messages = {
-      LogLevel.verbose:
-          'This is a verbose message with detailed debugging info',
+      LogLevel.verbose: 'This is a verbose message with detailed debugging info',
       LogLevel.debug: 'Debug: Component initialized successfully',
       LogLevel.info: 'User performed an action',
       LogLevel.warning: 'Warning: Approaching memory limit',
@@ -372,15 +254,7 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
       LogLevel.fatal: 'Fatal: Critical system failure',
     };
 
-    VooLogger.log(
-      messages[level]!,
-      level: level,
-      category: 'QuickAction',
-      metadata: {
-        'timestamp': DateTime.now().toIso8601String(),
-        'example': true,
-      },
-    );
+    VooLogger.log(messages[level]!, level: level, category: 'QuickAction', metadata: {'timestamp': DateTime.now().toIso8601String(), 'example': true});
 
     _showSnackBar('${level.name.toUpperCase()} log sent');
   }
@@ -390,18 +264,9 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
     await VooLogger.networkRequest(
       'GET',
       'https://api.example.com/users',
-      headers: {
-        'Authorization': 'Bearer token123',
-        'Content-Type': 'application/json',
-      },
-      metadata: {
-        'userId': 'user123',
-        'requestId': DateTime.now().millisecondsSinceEpoch.toString(),
-      },
+      headers: {'Authorization': 'Bearer token123', 'Content-Type': 'application/json'},
+      metadata: {'userId': 'user123', 'requestId': DateTime.now().millisecondsSinceEpoch.toString()},
     );
-
-    // Simulate network delay
-    await Future.delayed(const Duration(seconds: 1));
 
     // Log the response
     await VooLogger.networkResponse(
@@ -420,11 +285,7 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
     VooLogger.userAction(
       'button_click',
       screen: 'LoggingExamplePage',
-      properties: {
-        'button': 'log_user_action',
-        'timestamp': DateTime.now().toIso8601String(),
-        'sessionDuration': 300,
-      },
+      properties: {'button': 'log_user_action', 'timestamp': DateTime.now().toIso8601String(), 'sessionDuration': 300},
     );
 
     _showSnackBar('User action logged');
@@ -440,10 +301,7 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
         stackTrace: stackTrace,
         category: 'Error',
         tag: 'SimulatedError',
-        metadata: {
-          'errorType': e.runtimeType.toString(),
-          'screen': 'LoggingExamplePage',
-        },
+        metadata: {'errorType': e.runtimeType.toString(), 'screen': 'LoggingExamplePage'},
       );
     }
 
@@ -454,20 +312,15 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
     VooLogger.performance(
       'DatabaseQuery',
       const Duration(milliseconds: 456),
-      metrics: {
-        'rowCount': 1000,
-        'cacheHit': false,
-        'queryType': 'SELECT',
-        'table': 'users',
-      },
+      metrics: {'rowCount': 1000, 'cacheHit': false, 'queryType': 'SELECT', 'table': 'users'},
     );
 
     _showSnackBar('Performance metric logged');
   }
 
-  void _generateMultipleLogs() async {
+  Future<void> _generateMultipleLogs() async {
     final categories = ['Network', 'Database', 'UI', 'Analytics', 'System'];
-    final levels = LogLevel.values;
+    const levels = LogLevel.values;
 
     for (int i = 0; i < 20; i++) {
       final category = categories[i % categories.length];
@@ -478,15 +331,8 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
         level: level,
         category: category,
         tag: 'BatchLog',
-        metadata: {
-          'index': i,
-          'batch': true,
-          'timestamp': DateTime.now().toIso8601String(),
-        },
+        metadata: {'index': i, 'batch': true, 'timestamp': DateTime.now().toIso8601String()},
       );
-
-      // Small delay to spread out timestamps
-      await Future.delayed(const Duration(milliseconds: 50));
     }
 
     _showSnackBar('Generated 20 logs');
@@ -497,7 +343,7 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
 
     if (!mounted) return;
 
-    showDialog(
+    await showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Log Statistics'),
@@ -508,22 +354,13 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
             Text('Total Logs: ${stats.totalLogs}'),
             const SizedBox(height: 8),
             const Text('By Level:'),
-            ...stats.levelCounts.entries.map(
-              (e) => Text('  ${e.key}: ${e.value}'),
-            ),
+            // ...stats.levelCounts.entries.map((e) => Text('  ${e.key}: ${e.value}')),
             const SizedBox(height: 8),
             const Text('By Category:'),
-            ...stats.categoryCounts.entries
-                .take(5)
-                .map((e) => Text('  ${e.key}: ${e.value}')),
+            // ...stats.categoryCounts.entries.take(5).map((e) => Text('  ${e.key}: ${e.value}')),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
-          ),
-        ],
+        actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Close'))],
       ),
     );
   }
@@ -542,14 +379,9 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Clear All Logs?'),
-        content: const Text(
-          'This will delete all stored logs. This action cannot be undone.',
-        ),
+        content: const Text('This will delete all stored logs. This action cannot be undone.'),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
+          TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text('Cancel')),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             child: const Text('Clear', style: TextStyle(color: Colors.red)),
@@ -569,18 +401,12 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
     VooLogger.setUserId(newUserId);
     VooLogger.startNewSession();
 
-    VooLogger.info(
-      'User changed',
-      category: 'System',
-      metadata: {'oldUserId': 'user123', 'newUserId': newUserId},
-    );
+    VooLogger.info('User changed', category: 'System', metadata: {'oldUserId': 'user123', 'newUserId': newUserId});
 
     _showSnackBar('User changed to: $newUserId');
   }
 
   void _showSnackBar(String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 }

@@ -9,11 +9,9 @@ import 'package:voo_logging/voo_logging.dart';
 class LogBloc extends Bloc<LogEvent, LogState> {
   final LoggerRepository repository;
 
-  StreamSubscription<LogEntry>? logStreamSubscription;
+  late final StreamSubscription<LogEntry>? logStreamSubscription;
 
-  LogBloc({
-    required this.repository,
-  }) : super(const LogState()) {
+  LogBloc({required this.repository}) : super(const LogState()) {
     on<LoadLogs>(_onLoadLogs);
     on<FilterLogsChanged>(_onFilterLogsChanged);
     on<LogReceived>(_onLogReceived);

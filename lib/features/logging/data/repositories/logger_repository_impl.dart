@@ -17,10 +17,8 @@ class LoggerRepositoryImpl extends LoggerRepository {
 
   final _random = Random();
 
-  // Private stream controller for log entries
   final StreamController<LogEntry> _logStreamController = StreamController<LogEntry>.broadcast();
 
-  /// Public stream of log entries for real-time listeners
   @override
   Stream<LogEntry> get stream async* {
     yield LogEntry(id: 'initial', timestamp: DateTime.now(), message: 'Logger streaming started', level: LogLevel.info);
@@ -78,7 +76,10 @@ class LoggerRepositoryImpl extends LoggerRepository {
     String? userId,
     String? sessionId,
   }) async {
-    if (!_enabled || level.priority < _minimumLevel.priority) return;
+    if (!_enabled || level.priority < _minimumLevel.priority) {
+      await log('Log skipped: $message');
+      return;
+    }
 
     final entry = LogEntry(
       id: _generateLogId(),

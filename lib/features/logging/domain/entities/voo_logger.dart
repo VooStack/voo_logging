@@ -4,28 +4,19 @@ import 'package:voo_logging/voo_logging.dart';
 class VooLogger {
   bool _initialized = false;
   factory VooLogger() => instance;
-  late final LoggerRepository _repository;
+  final LoggerRepository _repository = LoggerRepositoryImpl();
   Stream<LogEntry> get stream => _repository.stream;
   LoggerRepository get repository => _repository;
   VooLogger._internal();
 
   static final VooLogger instance = VooLogger._internal();
 
-  static Future<void> initialize({
-    String? appName,
-    String? appVersion,
-    String? userId,
-    LogLevel minimumLevel = LogLevel.verbose,
-  }) async {
+  static Future<void> initialize({String? appName, String? appVersion, String? userId, LogLevel minimumLevel = LogLevel.verbose}) async {
     if (instance._initialized) return;
+
     instance._initialized = true;
-    instance._repository = LoggerRepositoryImpl();
-    await instance._repository.initialize(
-      appName: appName,
-      appVersion: appVersion,
-      userId: userId,
-      minimumLevel: minimumLevel,
-    );
+
+    await instance._repository.initialize(appName: appName, appVersion: appVersion, userId: userId, minimumLevel: minimumLevel);
   }
 
   static Future<void> verbose(String message, {String? category, String? tag, Map<String, dynamic>? metadata}) async {

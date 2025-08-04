@@ -5,7 +5,8 @@ import 'package:voo_logging/features/devtools_extension/presentation/blocs/log_b
 import 'package:voo_logging/features/devtools_extension/presentation/pages/voo_logger_page.dart';
 import 'package:voo_logging/voo_logging.dart';
 
-void main() {
+Future<void> main() async {
+  await VooLogger.initialize();
   runApp(const VooLoggerDevToolsExtension());
 }
 
