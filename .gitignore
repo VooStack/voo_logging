@@ -25,3 +25,10 @@ doc/api/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+
+# DevTools extension build output
+extension/devtools/build/
+extension/devtools/.dart_tool/
+extension/devtools/.flutter-plugins
+extension/devtools/.flutter-plugins-dependencies
+extension/devtools/pubspec.lock

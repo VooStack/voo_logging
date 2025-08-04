@@ -35,6 +35,10 @@ jobs:
         run: flutter pub get
         working-directory: ./example
 
+      - name: Install extension dependencies
+        run: flutter pub get
+        working-directory: ./extension/devtools
+
 
       # Uncomment this step to verify the use of 'dart format' on each commit.
       # - name: Verify formatting
@@ -47,6 +51,10 @@ jobs:
       - name: Analyze example project source
         run: flutter analyze
         working-directory: ./example
+
+      - name: Analyze extension source
+        run: flutter analyze
+        working-directory: ./extension/devtools
 
 
       # Run tests if they exist

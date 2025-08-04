@@ -2,9 +2,9 @@
 
 ## Quick Start
 
-1. **Install dependencies**:
+1. **Build and prepare the DevTools extension**:
    ```bash
-   flutter pub get
+   make prepare_devtools
    ```
 
 2. **Run the example app**:
@@ -16,7 +16,9 @@
 3. **Open DevTools**:
    - Press `c` in the terminal where Flutter is running to open DevTools
    - Or run: `flutter pub global run devtools`
-   - The Voo Logger functionality is integrated into the main package
+   - Navigate to the Extensions tab
+   - Enable 'voo_logger'
+   - The 'Voo Logger' tab will appear
 
 ## Fixed Issues
 
