@@ -1,0 +1,11 @@
+{
+  "configVersion": 2,
+  "packages": [
+    {
+      "name": "voo_logging",
+      "rootUri": "../..",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    }
+  ]
+}
