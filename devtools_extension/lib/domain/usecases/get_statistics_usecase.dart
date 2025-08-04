@@ -9,6 +9,5 @@ class GetStatisticsUseCase implements UseCase<LogStatistics, LogFilter?> {
   GetStatisticsUseCase(this.repository);
 
   @override
-  Future<LogStatistics> call(LogFilter? filter) async =>
-      repository.getStatistics(filter: filter);
+  Future<LogStatistics> call(LogFilter? filter) async => repository.getStatistics(filter: filter);
 }

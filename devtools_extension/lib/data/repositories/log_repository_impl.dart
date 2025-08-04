@@ -13,8 +13,7 @@ class LogRepositoryImpl implements LogRepository {
   LogRepositoryImpl(this.dataSource);
 
   @override
-  Stream<LogEntry> get logStream =>
-      dataSource.logStream.map((model) => model.toEntity());
+  Stream<LogEntry> get logStream => dataSource.logStream.map((model) => model.toEntity());
 
   @override
   Future<List<LogEntry>> getLogs({
@@ -22,8 +21,7 @@ class LogRepositoryImpl implements LogRepository {
     int limit = 1000,
     int offset = 0,
   }) async {
-    final allLogs =
-        dataSource.getCachedLogs().map((model) => model.toEntity()).toList();
+    final allLogs = dataSource.getCachedLogs().map((model) => model.toEntity()).toList();
 
     // Apply filter
     var filteredLogs = allLogs;

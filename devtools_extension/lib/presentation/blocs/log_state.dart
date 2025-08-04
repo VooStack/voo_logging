@@ -51,8 +51,7 @@ class LogState extends Equatable {
       LogState(
         logs: logs ?? this.logs,
         filteredLogs: filteredLogs ?? this.filteredLogs,
-        selectedLog:
-            clearSelectedLog ? null : (selectedLog ?? this.selectedLog),
+        selectedLog: clearSelectedLog ? null : (selectedLog ?? this.selectedLog),
         filter: filter ?? this.filter,
         isLoading: isLoading ?? this.isLoading,
         error: clearError ? null : (error ?? this.error),

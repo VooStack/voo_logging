@@ -35,10 +35,7 @@ class LogStatisticsCard extends StatelessWidget {
   }
 
   Widget _buildSummary(ThemeData theme) {
-    final duration =
-        statistics.newestLog != null && statistics.oldestLog != null
-            ? statistics.newestLog!.difference(statistics.oldestLog!)
-            : null;
+    final duration = statistics.newestLog != null && statistics.oldestLog != null ? statistics.newestLog!.difference(statistics.oldestLog!) : null;
 
     return Card(
       child: Padding(
@@ -54,8 +51,7 @@ class LogStatisticsCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             _buildStatRow('Total Logs', statistics.totalLogs.toString()),
-            if (duration != null)
-              _buildStatRow('Duration', _formatDuration(duration)),
+            if (duration != null) _buildStatRow('Duration', _formatDuration(duration)),
             if (statistics.oldestLog != null)
               _buildStatRow(
                 'First Log',
@@ -121,8 +117,7 @@ class LogStatisticsCard extends StatelessWidget {
       );
 
   Widget _buildTopCategories(ThemeData theme) {
-    final sortedCategories = statistics.categoryCounts.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
+    final sortedCategories = statistics.categoryCounts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
 
     return Card(
       child: Padding(
@@ -147,8 +142,7 @@ class LogStatisticsCard extends StatelessWidget {
   }
 
   Widget _buildTopTags(ThemeData theme) {
-    final sortedTags = statistics.tagCounts.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
+    final sortedTags = statistics.tagCounts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
 
     return Card(
       child: Padding(
@@ -215,8 +209,7 @@ class LogStatisticsCard extends StatelessWidget {
     }
   }
 
-  String _formatDateTime(DateTime dateTime) =>
-      '${dateTime.month}/${dateTime.day} '
+  String _formatDateTime(DateTime dateTime) => '${dateTime.month}/${dateTime.day} '
       '${dateTime.hour.toString().padLeft(2, '0')}:'
       '${dateTime.minute.toString().padLeft(2, '0')}';
 }

@@ -85,9 +85,7 @@ class _LogFilterBarState extends State<LogFilterBar> {
                 const SizedBox(width: 16),
                 TextButton.icon(
                   icon: Icon(
-                    _showAdvancedFilters
-                        ? Icons.filter_list_off
-                        : Icons.filter_list,
+                    _showAdvancedFilters ? Icons.filter_list_off : Icons.filter_list,
                   ),
                   label: Text(
                     _showAdvancedFilters ? 'Hide Filters' : 'Show Filters',

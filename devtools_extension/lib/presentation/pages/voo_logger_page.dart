@@ -69,8 +69,7 @@ class _VooLoggerPageState extends State<VooLoggerPage> {
     );
   }
 
-  Widget _buildToolbar(BuildContext context, ThemeData theme, LogState state) =>
-      Container(
+  Widget _buildToolbar(BuildContext context, ThemeData theme, LogState state) => Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: theme.colorScheme.surface,
@@ -119,8 +118,7 @@ class _VooLoggerPageState extends State<VooLoggerPage> {
             onPressed: () {
               context.read<LogBloc>().add(ToggleAutoScroll());
             },
-            tooltip:
-                state.autoScroll ? 'Pause auto-scroll' : 'Resume auto-scroll',
+            tooltip: state.autoScroll ? 'Pause auto-scroll' : 'Resume auto-scroll',
           ),
           IconButton(
             icon: const Icon(Icons.clear_all),
@@ -180,19 +178,13 @@ class _VooLoggerPageState extends State<VooLoggerPage> {
             Icon(
               Icons.inbox,
               size: 64,
-              color: Theme.of(context)
-                  .colorScheme
-                  .onSurface
-                  .withValues(alpha: 0.3),
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
             ),
             const SizedBox(height: 16),
             Text(
               'No logs to display',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withValues(alpha: 0.5),
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
                   ),
             ),
           ],

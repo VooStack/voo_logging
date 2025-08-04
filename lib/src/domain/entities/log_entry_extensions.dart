@@ -2,17 +2,5 @@ import 'package:voo_logging/src/data/models/log_entry_model.dart';
 import 'package:voo_logging/src/domain/entities/log_entry.dart';
 
 extension LogEntryExtensions on LogEntry {
-  LogEntryModel toModel() => LogEntryModel(
-    id,
-    timestamp,
-    message,
-    level,
-    category,
-    tag,
-    metadata,
-    error,
-    stackTrace,
-    userId,
-    sessionId,
-  );
+  LogEntryModel toModel() => LogEntryModel(id, timestamp, message, level, category, tag, metadata, error, stackTrace, userId, sessionId);
 }

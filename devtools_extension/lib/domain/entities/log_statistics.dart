@@ -40,8 +40,7 @@ class LogStatistics extends Equatable {
       levelCounts[log.level] = (levelCounts[log.level] ?? 0) + 1;
 
       if (log.category != null) {
-        categoryCounts[log.category!] =
-            (categoryCounts[log.category!] ?? 0) + 1;
+        categoryCounts[log.category!] = (categoryCounts[log.category!] ?? 0) + 1;
       }
 
       if (log.tag != null) {

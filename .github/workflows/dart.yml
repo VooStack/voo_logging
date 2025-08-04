@@ -61,6 +61,10 @@ jobs:
         if: steps.check_tests.outputs.has_tests == 'true'
         run: flutter test
 
+      - name: Run devtools extension tests
+        run: flutter test
+        working-directory: ./devtools_extension
+
       - name: Run example tests
         run: flutter test
         working-directory: ./example
