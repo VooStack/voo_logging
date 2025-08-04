@@ -1,0 +1,11 @@
+{
+    "name": "voo_logger_devtools",
+    "short_name": "voo_logger_devtools",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#0175C2",
+    "theme_color": "#0175C2",
+    "description": "DevTools extension for Voo Logger",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false
+}
