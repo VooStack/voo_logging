@@ -1,0 +1,10 @@
+name: voo_logger_devtools_web
+description: Web entry point for Voo Logger DevTools extension
+publish_to: none
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  voo_logging:
+    path: ../../

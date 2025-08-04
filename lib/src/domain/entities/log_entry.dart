@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:voo_logging/src/data/enums/log_level.dart';
+import 'package:voo_logging/src/domain/enums/log_level.dart';
 
 class LogEntry extends Equatable {
   final String id;

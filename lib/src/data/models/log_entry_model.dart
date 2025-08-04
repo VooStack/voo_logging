@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:voo_logging/src/data/enums/log_level.dart';
+import 'package:voo_logging/src/domain/enums/log_level.dart';
 
 part 'log_entry_model.g.dart';
 

@@ -3,6 +3,7 @@ import 'dart:developer' as developer;
 import 'dart:math';
 
 import 'package:voo_logging/src/data/sources/local/local_log_storage.dart';
+import 'package:voo_logging/src/domain/enums/log_level.dart';
 import 'package:voo_logging/src/domain/repositories/logger_repository.dart';
 import 'package:voo_logging/voo_logging.dart';
 
@@ -18,8 +19,10 @@ class LoggerRepositoryImpl extends LoggerRepository {
 
   final _random = Random();
 
-  final StreamController<LogEntry> logStreamController = StreamController<LogEntry>.broadcast();
+  // Private stream controller for log entries
+  final StreamController<LogEntry> _logStreamController = StreamController<LogEntry>.broadcast();
 
+  /// Public stream of log entries for real-time listeners
   @override
   Stream<LogEntry> get stream async* {
     yield LogEntry(
@@ -28,7 +31,7 @@ class LoggerRepositoryImpl extends LoggerRepository {
       message: 'Logger streaming started',
       level: LogLevel.info,
     );
-    yield* logStreamController.stream;
+    yield* _logStreamController.stream;
   }
 
   @override
@@ -100,8 +103,8 @@ class LoggerRepositoryImpl extends LoggerRepository {
     _logToDevTools(entry);
 
     // Add log entry to the stream for real-time listeners
-    if (!logStreamController.isClosed) {
-      logStreamController.add(entry);
+    if (!_logStreamController.isClosed) {
+      _logStreamController.add(entry);
     }
 
     await _storage?.insertLog(entry).catchError((Object error) {
@@ -326,6 +329,6 @@ class LoggerRepositoryImpl extends LoggerRepository {
   }
 
   void close() {
-    logStreamController.close();
+    _logStreamController.close();
   }
 }

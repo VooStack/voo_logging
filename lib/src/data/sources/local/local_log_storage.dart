@@ -8,7 +8,7 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:sembast_web/sembast_web.dart';
-import 'package:voo_logging/src/data/enums/log_level.dart';
+import 'package:voo_logging/src/domain/enums/log_level.dart';
 import 'package:voo_logging/src/data/models/log_entry_model.dart';
 import 'package:voo_logging/src/data/models/log_entry_model_extensions.dart';
 import 'package:voo_logging/src/domain/entities/log_entry.dart';
