@@ -1,0 +1,53 @@
+name: DevTools Extension CI
+
+on:
+  push:
+    branches: ['main']
+    paths:
+      - 'extension/devtools/**'
+      - 'lib/features/devtools_extension/**'
+      - '.github/workflows/devtools-extension.yml'
+  pull_request:
+    branches: ['main']
+    paths:
+      - 'extension/devtools/**'
+      - 'lib/features/devtools_extension/**'
+      - '.github/workflows/devtools-extension.yml'
+
+jobs:
+  build-and-validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install main package dependencies
+        run: flutter pub get
+
+      - name: Install extension dependencies
+        run: flutter pub get
+        working-directory: ./extension/devtools
+
+      - name: Analyze extension source
+        run: flutter analyze
+        working-directory: ./extension/devtools
+
+      - name: Build extension
+        run: flutter build web --release
+        working-directory: ./extension/devtools
+
+      - name: Validate extension
+        run: dart run devtools_extensions validate --package=.
+
+      - name: Build and copy extension
+        run: dart run devtools_extensions build_and_copy --source=extension/devtools --dest=extension/devtools/build
+
+      - name: Upload extension artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: devtools-extension
+          path: extension/devtools/build/
