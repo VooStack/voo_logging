@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:voo_logging/core/domain/enums/log_level.dart';
 import 'package:voo_logging/features/devtools_extension/presentation/blocs/log_bloc.dart';
 import 'package:voo_logging/features/devtools_extension/presentation/blocs/log_event.dart';
 import 'package:voo_logging/features/devtools_extension/presentation/blocs/log_state.dart';
@@ -7,6 +8,7 @@ import 'package:voo_logging/features/devtools_extension/presentation/widgets/mol
 import 'package:voo_logging/features/devtools_extension/presentation/widgets/organisms/log_details_panel.dart';
 import 'package:voo_logging/features/devtools_extension/presentation/widgets/organisms/log_filter_bar.dart';
 import 'package:voo_logging/features/devtools_extension/presentation/widgets/organisms/log_statistics_card.dart';
+import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
 
 class VooLoggerPage extends StatefulWidget {
   const VooLoggerPage({super.key});
@@ -127,6 +129,11 @@ class _VooLoggerPageState extends State<VooLoggerPage> {
             icon: const Icon(Icons.bar_chart),
             onPressed: () => _showStatistics(context, state),
             tooltip: 'Show statistics',
+          ),
+          IconButton(
+            icon: const Icon(Icons.bug_report),
+            onPressed: () => _generateTestLog(context),
+            tooltip: 'Generate test log',
           ),
         ],
       );
@@ -258,6 +265,32 @@ class _VooLoggerPageState extends State<VooLoggerPage> {
             child: const Text('Close'),
           ),
         ],
+      ),
+    );
+  }
+  
+  void _generateTestLog(BuildContext context) {
+    // Directly add a test log to see if UI updates
+    context.read<LogBloc>().add(LogReceived(
+      LogEntryModel(
+        'test_${DateTime.now().millisecondsSinceEpoch}',
+        DateTime.now(),
+        'Test log generated from UI at ${DateTime.now()}',
+        LogLevel.info,
+        'Test',
+        'UITest',
+        {'source': 'manual_test'},
+        null,
+        null,
+        null,
+        null,
+      ),
+    ));
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Test log generated'),
+        duration: Duration(seconds: 1),
       ),
     );
   }

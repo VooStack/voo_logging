@@ -1,4 +1,5 @@
 import 'package:voo_logging/features/logging/data/repositories/logger_repository_impl.dart';
+import 'package:voo_logging/features/logging/presentation/voo_logger_extension_registration.dart';
 import 'package:voo_logging/voo_logging.dart';
 
 class VooLogger {
@@ -13,6 +14,9 @@ class VooLogger {
 
   static Future<void> initialize({String? appName, String? appVersion, String? userId, LogLevel minimumLevel = LogLevel.verbose}) async {
     if (instance._initialized) return;
+
+    // Register the extension for DevTools
+    registerVooLoggerExtension();
 
     instance._initialized = true;
 

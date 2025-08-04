@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer' as developer;
 import 'dart:math';
 
@@ -96,12 +97,11 @@ class LoggerRepositoryImpl extends LoggerRepository {
     );
 
     _logToDevTools(entry);
+    _sendStructuredLogToDevTools(entry);
 
     _logStreamController.add(entry);
 
     await _storage?.insertLog(entry).catchError((Object error) => developer.log('Failed to store log: $error', name: 'AwesomeLogger', level: 1000));
-
-    _sendToDevToolsExtension(entry);
   }
 
   Map<String, dynamic>? _enrichMetadata(Map<String, dynamic>? userMetadata) {
@@ -139,9 +139,11 @@ class LoggerRepositoryImpl extends LoggerRepository {
     } catch (e) {}
   }
 
-  void _sendToDevToolsExtension(LogEntry entry) {
+  void _sendStructuredLogToDevTools(LogEntry entry) {
     try {
-      developer.postEvent('voo_logger.log', {
+      // Send structured log data as JSON through the standard logging mechanism
+      final structuredData = {
+        '__voo_logger__': true,
         'entry': {
           'id': entry.id,
           'timestamp': entry.timestamp.toIso8601String(),
@@ -150,15 +152,28 @@ class LoggerRepositoryImpl extends LoggerRepository {
           'category': entry.category,
           'tag': entry.tag,
           'metadata': entry.metadata,
-          'error': entry.error,
+          'error': entry.error?.toString(),
           'stackTrace': entry.stackTrace,
           'userId': entry.userId,
           'sessionId': entry.sessionId,
         },
-        'timestamp': entry.timestamp.millisecondsSinceEpoch,
-      });
-      // ignore: empty_catches
-    } catch (e) {}
+      };
+      
+      // Send as a structured log that the DevTools extension can parse
+      developer.log(
+        jsonEncode(structuredData),
+        name: 'VooLogger',
+        level: entry.level.priority,
+        time: entry.timestamp,
+      );
+    } catch (e) {
+      // Fallback to regular logging if structured logging fails
+      developer.log(
+        'Error sending structured log: $e', 
+        name: 'VooLogger',
+        level: 1000,
+      );
+    }
   }
 
   @override

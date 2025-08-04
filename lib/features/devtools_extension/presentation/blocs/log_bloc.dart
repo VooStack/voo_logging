@@ -42,8 +42,9 @@ class LogBloc extends Bloc<LogEvent, LogState> {
     try {
       emit(state.copyWith(isLoading: true));
 
-      // Get cached logs
       final cachedLogs = repository.getCachedLogs();
+
+      log('LoadLogs - Found ${cachedLogs.length} cached logs', name: 'LogBloc', level: 800);
 
       emit(
         state.copyWith(
@@ -79,14 +80,17 @@ class LogBloc extends Bloc<LogEvent, LogState> {
   }
 
   void _onLogReceived(LogReceived event, Emitter<LogState> emit) {
-    log('Log received: ${event.log.id}', name: 'LogBloc', level: 800);
+    log('Log received: ${event.log.id} - ${event.log.message}', name: 'LogBloc', level: 800);
 
     final updatedLogs = [...state.logs, event.log];
+    final filtered = _applyFilters(updatedLogs, state);
+
+    log('Total logs: ${updatedLogs.length}, Filtered: ${filtered.length}', name: 'LogBloc', level: 800);
 
     emit(
       state.copyWith(
         logs: updatedLogs,
-        filteredLogs: _applyFilters(updatedLogs, state),
+        filteredLogs: filtered,
       ),
     );
   }
@@ -120,11 +124,35 @@ class LogBloc extends Bloc<LogEvent, LogState> {
     );
   }
 
-  List<LogEntryModel> _applyFilters(List<LogEntryModel> logs, LogState state) => repository.filterLogs(
-        levels: state.selectedLevels,
-        searchQuery: state.searchQuery,
-        category: state.selectedCategory,
-      );
+  List<LogEntryModel> _applyFilters(List<LogEntryModel> logs, LogState state) {
+    var filtered = logs;
+
+    // Apply level filter
+    if (state.selectedLevels != null && state.selectedLevels!.isNotEmpty) {
+      filtered = filtered.where((log) => state.selectedLevels!.contains(log.level)).toList();
+    }
+
+    // Apply category filter
+    if (state.selectedCategory != null && state.selectedCategory!.isNotEmpty) {
+      filtered = filtered.where((log) => log.category == state.selectedCategory).toList();
+    }
+
+    // Apply search filter
+    if (state.searchQuery.isNotEmpty) {
+      final query = state.searchQuery.toLowerCase();
+      filtered = filtered
+          .where(
+            (log) =>
+                log.message.toLowerCase().contains(query) ||
+                (log.category?.toLowerCase().contains(query) ?? false) ||
+                (log.tag?.toLowerCase().contains(query) ?? false) ||
+                (log.error?.toString().toLowerCase().contains(query) ?? false),
+          )
+          .toList();
+    }
+
+    return filtered;
+  }
 
   @override
   Future<void> close() {
