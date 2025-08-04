@@ -50,7 +50,7 @@ class LogStatisticsCard extends StatelessWidget {
           Text('Log Levels', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
           ...LogLevel.values.map((level) {
-            final count = statistics.levelCounts[level] ?? 0;
+            final count = statistics.levelCounts[level.name] ?? 0;
             if (count == 0) return const SizedBox.shrink();
 
             return Padding(

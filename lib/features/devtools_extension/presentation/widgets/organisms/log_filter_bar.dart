@@ -56,7 +56,7 @@ class _LogFilterBarState extends State<LogFilterBar> {
                   child: TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
-                      hintText: 'Search logs...',
+                      hintText: 'Search logs... (use /pattern/ for regex)',
                       prefixIcon: const Icon(Icons.search),
                       suffixIcon: _searchController.text.isNotEmpty
                           ? IconButton(

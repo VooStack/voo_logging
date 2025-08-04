@@ -6,6 +6,8 @@ import 'package:voo_logging/features/devtools_extension/domain/repositories/devt
 import 'package:voo_logging/features/devtools_extension/presentation/blocs/log_event.dart';
 import 'package:voo_logging/features/devtools_extension/presentation/blocs/log_state.dart';
 import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
+import 'package:voo_logging/features/logging/data/models/log_entry_model_extensions.dart';
+import 'package:voo_logging/features/logging/domain/entities/log_statistics_extensions.dart';
 
 class LogBloc extends Bloc<LogEvent, LogState> {
   final DevToolsLogRepository repository;
@@ -43,18 +45,27 @@ class LogBloc extends Bloc<LogEvent, LogState> {
 
       log('LoadLogs - Found ${cachedLogs.length} cached logs', name: 'LogBloc', level: 800);
 
-      emit(state.copyWith(logs: cachedLogs, isLoading: false, filteredLogs: _applyFilters(cachedLogs, state)));
+      final filteredLogs = _applyFilters(cachedLogs, state);
+      final statistics = LogStatisticsExtensions.fromLogs(cachedLogs.map((log) => log.toEntity()).toList());
+      
+      emit(state.copyWith(
+        logs: cachedLogs,
+        isLoading: false,
+        filteredLogs: filteredLogs,
+        statistics: statistics,
+      ));
     } catch (e) {
       emit(state.copyWith(error: e.toString(), isLoading: false));
     }
   }
 
   Future<void> _onFilterLogsChanged(FilterLogsChanged event, Emitter<LogState> emit) async {
+    final newState = state.copyWith(selectedLevels: event.levels, selectedCategory: event.category);
+    final filteredLogs = _applyFilters(state.logs, newState);
+    
     emit(
-      state.copyWith(
-        selectedLevels: event.levels,
-        selectedCategory: event.category,
-        filteredLogs: _applyFilters(state.logs, state.copyWith(selectedLevels: event.levels, selectedCategory: event.category)),
+      newState.copyWith(
+        filteredLogs: filteredLogs,
       ),
     );
   }
@@ -67,7 +78,13 @@ class LogBloc extends Bloc<LogEvent, LogState> {
 
     log('Total logs: ${updatedLogs.length}, Filtered: ${filtered.length}', name: 'LogBloc', level: 800);
 
-    emit(state.copyWith(logs: updatedLogs, filteredLogs: filtered));
+    final statistics = LogStatisticsExtensions.fromLogs(updatedLogs.map((log) => log.toEntity()).toList());
+    
+    emit(state.copyWith(
+      logs: updatedLogs,
+      filteredLogs: filtered,
+      statistics: statistics,
+    ));
   }
 
   void _onSelectLog(SelectLog event, Emitter<LogState> emit) {
@@ -80,7 +97,11 @@ class LogBloc extends Bloc<LogEvent, LogState> {
 
   Future<void> _onClearLogs(ClearLogs event, Emitter<LogState> emit) async {
     repository.clearLogs();
-    emit(state.copyWith(logs: [], filteredLogs: []));
+    emit(state.copyWith(
+      logs: [],
+      filteredLogs: [],
+      statistics: LogStatisticsExtensions.fromLogs([]),
+    ));
   }
 
   void _onToggleAutoScroll(ToggleAutoScroll event, Emitter<LogState> emit) {
@@ -111,16 +132,46 @@ class LogBloc extends Bloc<LogEvent, LogState> {
 
     // Apply search filter
     if (state.searchQuery.isNotEmpty) {
-      final query = state.searchQuery.toLowerCase();
-      filtered = filtered
-          .where(
-            (log) =>
-                log.message.toLowerCase().contains(query) ||
-                (log.category?.toLowerCase().contains(query) ?? false) ||
-                (log.tag?.toLowerCase().contains(query) ?? false) ||
-                (log.error?.toString().toLowerCase().contains(query) ?? false),
-          )
-          .toList();
+      // Check if query is a regex pattern (starts and ends with /)
+      if (state.searchQuery.startsWith('/') && state.searchQuery.endsWith('/') && state.searchQuery.length > 2) {
+        try {
+          final pattern = state.searchQuery.substring(1, state.searchQuery.length - 1);
+          final regex = RegExp(pattern, caseSensitive: false);
+          filtered = filtered
+              .where(
+                (log) =>
+                    regex.hasMatch(log.message) ||
+                    (log.category != null && regex.hasMatch(log.category!)) ||
+                    (log.tag != null && regex.hasMatch(log.tag!)) ||
+                    (log.error != null && regex.hasMatch(log.error.toString())),
+              )
+              .toList();
+        } catch (e) {
+          // If regex is invalid, fall back to regular search
+          final query = state.searchQuery.toLowerCase();
+          filtered = filtered
+              .where(
+                (log) =>
+                    log.message.toLowerCase().contains(query) ||
+                    (log.category?.toLowerCase().contains(query) ?? false) ||
+                    (log.tag?.toLowerCase().contains(query) ?? false) ||
+                    (log.error?.toString().toLowerCase().contains(query) ?? false),
+              )
+              .toList();
+        }
+      } else {
+        // Regular text search
+        final query = state.searchQuery.toLowerCase();
+        filtered = filtered
+            .where(
+              (log) =>
+                  log.message.toLowerCase().contains(query) ||
+                  (log.category?.toLowerCase().contains(query) ?? false) ||
+                  (log.tag?.toLowerCase().contains(query) ?? false) ||
+                  (log.error?.toString().toLowerCase().contains(query) ?? false),
+            )
+            .toList();
+      }
     }
 
     return filtered;

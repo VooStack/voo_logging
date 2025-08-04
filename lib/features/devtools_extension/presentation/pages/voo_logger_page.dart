@@ -9,6 +9,8 @@ import 'package:voo_logging/features/devtools_extension/presentation/widgets/org
 import 'package:voo_logging/features/devtools_extension/presentation/widgets/organisms/log_filter_bar.dart';
 import 'package:voo_logging/features/devtools_extension/presentation/widgets/organisms/log_statistics_card.dart';
 import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
+import 'package:voo_logging/features/devtools_extension/presentation/widgets/molecules/log_rate_indicator.dart';
+import 'package:voo_logging/features/devtools_extension/presentation/widgets/molecules/log_export_dialog.dart';
 
 class VooLoggerPage extends StatefulWidget {
   const VooLoggerPage({super.key});
@@ -75,10 +77,12 @@ class _VooLoggerPageState extends State<VooLoggerPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Voo Logger', style: theme.textTheme.headlineSmall),
-            Text('${state.statistics?.totalLogs ?? 0} logs captured', style: theme.textTheme.bodySmall),
+            Text('${state.statistics?.totalLogs ?? state.logs.length} logs captured', style: theme.textTheme.bodySmall),
           ],
         ),
         const Spacer(),
+        const LogRateIndicator(),
+        const SizedBox(width: 16),
         _buildToolbarActions(context, theme, state),
       ],
     ),
@@ -178,9 +182,23 @@ class _VooLoggerPageState extends State<VooLoggerPage> {
   }
 
   Future<void> _exportLogs(BuildContext context) async {
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Logs exported successfully'), duration: Duration(seconds: 2)));
+    final state = context.read<LogBloc>().state;
+    final logsToExport = state.filteredLogs.isNotEmpty ? state.filteredLogs : state.logs;
+    
+    if (logsToExport.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No logs to export'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
     }
+    
+    await showDialog(
+      context: context,
+      builder: (context) => LogExportDialog(logs: logsToExport),
+    );
   }
 
   void _showStatistics(BuildContext context, LogState state) {
