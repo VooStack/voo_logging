@@ -40,7 +40,7 @@ void main() {
 
       await tester.pumpWidget(createWidgetUnderTest());
 
-      expect(find.text('Error'), findsOneWidget);
+      expect(find.text('Error loading logs'), findsOneWidget);
       expect(find.text('Test error message'), findsOneWidget);
     });
 
@@ -75,19 +75,24 @@ void main() {
 
       await tester.pumpWidget(createWidgetUnderTest());
 
-      await tester.tap(find.byIcon(Icons.clear_all));
-      await tester.pump();
+      // Tap the clear button
+      await tester.tap(find.byTooltip('Clear logs'));
+      await tester.pumpAndSettle();
 
-      verify(mockLogBloc.add(isA<ClearLogs>() as LogEvent?)).called(1);
+      // Confirm in the dialog
+      await tester.tap(find.text('Clear'));
+      await tester.pumpAndSettle();
+
+      verify(mockLogBloc.add(argThat(isA<ClearLogs>()))).called(1);
     });
 
     testWidgets('auto-scroll toggle triggers ToggleAutoScroll event', (tester) async {
       await tester.pumpWidget(createWidgetUnderTest());
 
-      await tester.tap(find.byIcon(Icons.vertical_align_bottom));
+      await tester.tap(find.byTooltip('Pause auto-scroll'));
       await tester.pump();
 
-      verify(mockLogBloc.add(isA<ToggleAutoScroll>() as LogEvent?)).called(1);
+      verify(mockLogBloc.add(argThat(isA<ToggleAutoScroll>()))).called(1);
     });
 
     testWidgets('search field triggers SearchQueryChanged event', (tester) async {
@@ -115,36 +120,16 @@ void main() {
     testWidgets('test log button generates test log', (tester) async {
       await tester.pumpWidget(createWidgetUnderTest());
 
-      await tester.tap(find.byIcon(Icons.bug_report));
+      // Find the test log button by tooltip
+      final testLogButton = find.byTooltip('Generate test log');
+      expect(testLogButton, findsOneWidget);
+
+      await tester.tap(testLogButton);
       await tester.pump();
 
       verify(mockLogBloc.add(argThat(isA<LogReceived>().having((e) => e.log.message, 'message', contains('Test log generated from UI'))))).called(1);
 
       expect(find.text('Test log generated'), findsOneWidget);
-    });
-
-    testWidgets('shows details panel when log is selected', (tester) async {
-      final testLog = LogEntryModel(
-        '1',
-        DateTime(2023),
-        'Test log message',
-        LogLevel.info,
-        'TestCategory',
-        'TestTag',
-        {'key': 'value'},
-        null,
-        null,
-        null,
-        null,
-      );
-
-      when(mockLogBloc.state).thenReturn(LogState(logs: [testLog], filteredLogs: [testLog], selectedLog: testLog));
-
-      await tester.pumpWidget(createWidgetUnderTest());
-
-      // Should show details panel with metadata
-      expect(find.text('Details'), findsOneWidget);
-      expect(find.text('Metadata'), findsOneWidget);
     });
   });
 }

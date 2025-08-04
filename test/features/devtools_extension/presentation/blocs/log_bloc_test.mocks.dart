@@ -7,8 +7,10 @@ import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:voo_logging/core/domain/enums/log_level.dart' as _i5;
-import 'package:voo_logging/features/devtools_extension/domain/repositories/devtools_log_repository.dart' as _i2;
-import 'package:voo_logging/features/logging/data/models/log_entry_model.dart' as _i4;
+import 'package:voo_logging/features/devtools_extension/domain/repositories/devtools_log_repository.dart'
+    as _i2;
+import 'package:voo_logging/features/logging/data/models/log_entry_model.dart'
+    as _i4;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -27,26 +29,46 @@ import 'package:voo_logging/features/logging/data/models/log_entry_model.dart' a
 /// A class which mocks [DevToolsLogRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockDevToolsLogRepository extends _i1.Mock implements _i2.DevToolsLogRepository {
+class MockDevToolsLogRepository extends _i1.Mock
+    implements _i2.DevToolsLogRepository {
   MockDevToolsLogRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
   _i3.Stream<_i4.LogEntryModel> get logStream =>
-      (super.noSuchMethod(Invocation.getter(#logStream), returnValue: _i3.Stream<_i4.LogEntryModel>.empty()) as _i3.Stream<_i4.LogEntryModel>);
+      (super.noSuchMethod(
+            Invocation.getter(#logStream),
+            returnValue: _i3.Stream<_i4.LogEntryModel>.empty(),
+          )
+          as _i3.Stream<_i4.LogEntryModel>);
 
   @override
   List<_i4.LogEntryModel> getCachedLogs() =>
-      (super.noSuchMethod(Invocation.method(#getCachedLogs, []), returnValue: <_i4.LogEntryModel>[]) as List<_i4.LogEntryModel>);
-
-  @override
-  void clearLogs() => super.noSuchMethod(Invocation.method(#clearLogs, []), returnValueForMissingStub: null);
-
-  @override
-  List<_i4.LogEntryModel> filterLogs({List<_i5.LogLevel>? levels, String? searchQuery, String? category}) =>
       (super.noSuchMethod(
-            Invocation.method(#filterLogs, [], {#levels: levels, #searchQuery: searchQuery, #category: category}),
+            Invocation.method(#getCachedLogs, []),
+            returnValue: <_i4.LogEntryModel>[],
+          )
+          as List<_i4.LogEntryModel>);
+
+  @override
+  void clearLogs() => super.noSuchMethod(
+    Invocation.method(#clearLogs, []),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  List<_i4.LogEntryModel> filterLogs({
+    List<_i5.LogLevel>? levels,
+    String? searchQuery,
+    String? category,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#filterLogs, [], {
+              #levels: levels,
+              #searchQuery: searchQuery,
+              #category: category,
+            }),
             returnValue: <_i4.LogEntryModel>[],
           )
           as List<_i4.LogEntryModel>);
