@@ -30,7 +30,8 @@ class LogEntryModel {
     this.sessionId,
   );
 
-  factory LogEntryModel.fromJson(Map<String, dynamic> json) => _$LogEntryModelFromJson(json);
+  factory LogEntryModel.fromJson(Map<String, dynamic> json) =>
+      _$LogEntryModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$LogEntryModelToJson(this);
 }

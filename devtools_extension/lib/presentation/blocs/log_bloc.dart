@@ -152,7 +152,9 @@ class LogBloc extends Bloc<LogEvent, LogState> {
 
   Future<void> _onExportLogs(ExportLogs event, Emitter<LogState> emit) async {
     try {
-      await exportLogsUseCase(ExportLogsParams(filter: state.filter, format: event.format));
+      await exportLogsUseCase(
+        ExportLogsParams(filter: state.filter, format: event.format),
+      );
     } catch (e) {
       emit(state.copyWith(error: e.toString()));
     }

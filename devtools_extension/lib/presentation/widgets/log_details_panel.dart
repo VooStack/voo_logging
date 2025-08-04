@@ -46,15 +46,15 @@ class LogDetailsPanel extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   _buildInfoRow(
-                      'Timestamp', log.timestamp.toIso8601String(), theme),
+                    'Timestamp',
+                    log.timestamp.toIso8601String(),
+                    theme,
+                  ),
                   _buildInfoRow('Level', log.level.displayName, theme),
-                  if (log.category != null)
-                    _buildInfoRow('Category', log.category!, theme),
+                  if (log.category != null) _buildInfoRow('Category', log.category!, theme),
                   if (log.tag != null) _buildInfoRow('Tag', log.tag!, theme),
-                  if (log.userId != null)
-                    _buildInfoRow('User ID', log.userId!, theme),
-                  if (log.sessionId != null)
-                    _buildInfoRow('Session ID', log.sessionId!, theme),
+                  if (log.userId != null) _buildInfoRow('User ID', log.userId!, theme),
+                  if (log.sessionId != null) _buildInfoRow('Session ID', log.sessionId!, theme),
                   if (log.error != null) ...[
                     const SizedBox(height: 16),
                     _buildSection(
@@ -73,7 +73,7 @@ class LogDetailsPanel extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: theme.colorScheme.onSurface.withOpacity(0.05),
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.05),
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: SelectableText(
@@ -93,12 +93,11 @@ class LogDetailsPanel extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: theme.colorScheme.onSurface.withOpacity(0.05),
+                          color: theme.colorScheme.onSurface.withValues(alpha: 0.05),
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: SelectableText(
-                          const JsonEncoder.withIndent('  ')
-                              .convert(log.metadata),
+                          const JsonEncoder.withIndent('  ').convert(log.metadata),
                           style: theme.textTheme.bodySmall?.copyWith(
                             fontFamily: 'monospace',
                           ),

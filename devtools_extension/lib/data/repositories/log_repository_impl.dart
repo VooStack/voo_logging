@@ -166,7 +166,8 @@ class LogRepositoryImpl implements LogRepository {
 
     // Header
     buffer.writeln(
-        'Timestamp,Level,Category,Tag,Message,Error,User ID,Session ID');
+      'Timestamp,Level,Category,Tag,Message,Error,User ID,Session ID',
+    );
 
     // Data
     for (final log in logs) {
@@ -180,7 +181,8 @@ class LogRepositoryImpl implements LogRepository {
       final sessionId = _escapeCsv(log.sessionId ?? '');
 
       buffer.writeln(
-          '$timestamp,$level,$category,$tag,$message,$error,$userId,$sessionId');
+        '$timestamp,$level,$category,$tag,$message,$error,$userId,$sessionId',
+      );
     }
 
     return buffer.toString();
@@ -221,6 +223,7 @@ class LogRepositoryImpl implements LogRepository {
   Future<void> importLogs(String data, ImportFormat format) async {
     // Not implemented for DevTools extension
     throw UnimplementedError(
-        'Log import is not supported in DevTools extension');
+      'Log import is not supported in DevTools extension',
+    );
   }
 }

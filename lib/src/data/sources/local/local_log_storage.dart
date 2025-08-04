@@ -84,12 +84,18 @@ class LocalLogStorage {
   /// Initialize metadata store with app info
   /// Why? Helps track database schema version and app context
   Future<void> _initializeMetadata(Database db) async {
-    final existingVersion = await _metadataStore.record('schema_version').get(db);
+    final existingVersion = await _metadataStore
+        .record('schema_version')
+        .get(db);
 
     if (existingVersion == null) {
       // First time setup
-      await _metadataStore.record('schema_version').put(db, 1 as Map<String, Object?>);
-      await _metadataStore.record('created_at').put(db, DateTime.now().toIso8601String() as Map<String, Object?>);
+      await _metadataStore
+          .record('schema_version')
+          .put(db, 1 as Map<String, Object?>);
+      await _metadataStore
+          .record('created_at')
+          .put(db, DateTime.now().toIso8601String() as Map<String, Object?>);
     }
   }
 
@@ -103,7 +109,9 @@ class LocalLogStorage {
 
     // Use timestamp as key for natural ordering
     // Add microseconds to handle multiple logs in same millisecond
-    final key = entry.timestamp.millisecondsSinceEpoch * 1000 + entry.timestamp.microsecond;
+    final key =
+        entry.timestamp.millisecondsSinceEpoch * 1000 +
+        entry.timestamp.microsecond;
 
     return _logsStore.record(key).put(db, data);
   }
@@ -117,7 +125,9 @@ class LocalLogStorage {
     await db.transaction((txn) async {
       for (final entry in entries) {
         final data = entry.toModel().toJson();
-        final key = entry.timestamp.millisecondsSinceEpoch * 1000 + entry.timestamp.microsecond;
+        final key =
+            entry.timestamp.millisecondsSinceEpoch * 1000 +
+            entry.timestamp.microsecond;
 
         await _logsStore.record(key).put(txn, data);
       }
@@ -156,7 +166,8 @@ class LocalLogStorage {
       final levelNames = levels.map((l) => l.name).toList();
       filters.add(
         Filter.custom((record) {
-          final level = (record.value as Map<String, dynamic>?)?['level'] as String?;
+          final level =
+              (record.value as Map<String, dynamic>?)?['level'] as String?;
           return level != null && levelNames.contains(level);
         }),
       );
@@ -166,7 +177,8 @@ class LocalLogStorage {
     if (categories != null && categories.isNotEmpty) {
       filters.add(
         Filter.custom((record) {
-          final category = (record.value as Map<String, dynamic>?)?['category'] as String?;
+          final category =
+              (record.value as Map<String, dynamic>?)?['category'] as String?;
           return category != null && categories.contains(category);
         }),
       );
@@ -176,7 +188,8 @@ class LocalLogStorage {
     if (tags != null && tags.isNotEmpty) {
       filters.add(
         Filter.custom((record) {
-          final tag = (record.value as Map<String, dynamic>?)?['tag'] as String?;
+          final tag =
+              (record.value as Map<String, dynamic>?)?['tag'] as String?;
           return tag != null && tags.contains(tag);
         }),
       );
@@ -187,7 +200,8 @@ class LocalLogStorage {
     if (messagePattern != null && messagePattern.isNotEmpty) {
       filters.add(
         Filter.custom((record) {
-          final message = (record.value as Map<String, dynamic>?)?['message'] as String;
+          final message =
+              (record.value as Map<String, dynamic>?)?['message'] as String;
           return message.toLowerCase().contains(messagePattern.toLowerCase());
         }),
       );
@@ -195,11 +209,18 @@ class LocalLogStorage {
 
     // Time range filtering
     if (startTime != null) {
-      filters.add(Filter.greaterThanOrEquals('timestamp', startTime.millisecondsSinceEpoch));
+      filters.add(
+        Filter.greaterThanOrEquals(
+          'timestamp',
+          startTime.millisecondsSinceEpoch,
+        ),
+      );
     }
 
     if (endTime != null) {
-      filters.add(Filter.lessThanOrEquals('timestamp', endTime.millisecondsSinceEpoch));
+      filters.add(
+        Filter.lessThanOrEquals('timestamp', endTime.millisecondsSinceEpoch),
+      );
     }
 
     // User filtering
@@ -215,7 +236,9 @@ class LocalLogStorage {
     // Combine all filters with AND
     Filter? combinedFilter;
     if (filters.isNotEmpty) {
-      combinedFilter = filters.length == 1 ? filters.first : Filter.and(filters);
+      combinedFilter = filters.length == 1
+          ? filters.first
+          : Filter.and(filters);
     }
 
     // Create finder with filter and sorting
@@ -267,7 +290,9 @@ class LocalLogStorage {
       }
 
       // Date range
-      final timestamp = DateTime.fromMillisecondsSinceEpoch(data['timestamp']! as int);
+      final timestamp = DateTime.fromMillisecondsSinceEpoch(
+        data['timestamp']! as int,
+      );
       if (earliestLog == null || timestamp.isBefore(earliestLog)) {
         earliestLog = timestamp;
       }
@@ -277,7 +302,10 @@ class LocalLogStorage {
     }
 
     // Sort categories by count (most frequent first)
-    final sortedCategories = Map.fromEntries(categoryCounts.entries.toList()..sort((a, b) => b.value.compareTo(a.value)));
+    final sortedCategories = Map.fromEntries(
+      categoryCounts.entries.toList()
+        ..sort((a, b) => b.value.compareTo(a.value)),
+    );
 
     return LogStatistics(
       totalLogs: allRecords.length,
@@ -299,7 +327,10 @@ class LocalLogStorage {
     final records = await _logsStore.find(db, finder: finder);
 
     // Extract unique categories
-    final categories = records.map((record) => record.value['category']! as String).toSet().toList();
+    final categories = records
+        .map((record) => record.value['category']! as String)
+        .toSet()
+        .toList();
 
     categories.sort();
     return categories;
@@ -312,7 +343,10 @@ class LocalLogStorage {
 
     final records = await _logsStore.find(db, finder: finder);
 
-    final tags = records.map((record) => record.value['tag']! as String).toSet().toList();
+    final tags = records
+        .map((record) => record.value['tag']! as String)
+        .toSet()
+        .toList();
 
     tags.sort();
     return tags;
@@ -346,20 +380,27 @@ class LocalLogStorage {
 
   /// Clear logs with optional filtering
   /// Sembast makes this clean with its filtering system
-  Future<void> clearLogs({DateTime? olderThan, List<LogLevel>? levels, List<String>? categories}) async {
+  Future<void> clearLogs({
+    DateTime? olderThan,
+    List<LogLevel>? levels,
+    List<String>? categories,
+  }) async {
     final db = await database;
 
     final filters = <Filter>[];
 
     if (olderThan != null) {
-      filters.add(Filter.lessThan('timestamp', olderThan.millisecondsSinceEpoch));
+      filters.add(
+        Filter.lessThan('timestamp', olderThan.millisecondsSinceEpoch),
+      );
     }
 
     if (levels != null && levels.isNotEmpty) {
       final levelNames = levels.map((l) => l.name).toList();
       filters.add(
         Filter.custom((record) {
-          final level = (record.value as Map<String, dynamic>?)?['level'] as String?;
+          final level =
+              (record.value as Map<String, dynamic>?)?['level'] as String?;
           return level != null && levelNames.contains(level);
         }),
       );
@@ -368,7 +409,8 @@ class LocalLogStorage {
     if (categories != null && categories.isNotEmpty) {
       filters.add(
         Filter.custom((record) {
-          final category = (record.value as Map<String, dynamic>?)?['category'] as String?;
+          final category =
+              (record.value as Map<String, dynamic>?)?['category'] as String?;
           return category != null && categories.contains(category);
         }),
       );
@@ -377,7 +419,9 @@ class LocalLogStorage {
     // Create finder with combined filters
     Filter? combinedFilter;
     if (filters.isNotEmpty) {
-      combinedFilter = filters.length == 1 ? filters.first : Filter.and(filters);
+      combinedFilter = filters.length == 1
+          ? filters.first
+          : Filter.and(filters);
     }
 
     if (combinedFilter != null) {
@@ -391,7 +435,11 @@ class LocalLogStorage {
 
   /// Export logs to JSON
   /// Perfect for external analysis or backup
-  Future<String> exportLogs({List<LogLevel>? levels, DateTime? startTime, DateTime? endTime}) async {
+  Future<String> exportLogs({
+    List<LogLevel>? levels,
+    DateTime? startTime,
+    DateTime? endTime,
+  }) async {
     final logs = await queryLogs(
       levels: levels,
       startTime: startTime,
@@ -420,7 +468,9 @@ class LocalLogStorage {
     return {
       'totalLogs': totalLogs,
       'platform': kIsWeb ? 'web' : 'mobile',
-      'metadata': Map.fromEntries(metadata.map((record) => MapEntry(record.key, record.value))),
+      'metadata': Map.fromEntries(
+        metadata.map((record) => MapEntry(record.key, record.value)),
+      ),
     };
   }
 }

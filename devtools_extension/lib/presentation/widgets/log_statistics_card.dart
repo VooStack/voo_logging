@@ -138,7 +138,8 @@ class LogStatisticsCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             ...sortedCategories.take(5).map(
-                (entry) => _buildStatRow(entry.key, entry.value.toString())),
+                  (entry) => _buildStatRow(entry.key, entry.value.toString()),
+                ),
           ],
         ),
       ),
@@ -163,7 +164,8 @@ class LogStatisticsCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             ...sortedTags.take(5).map(
-                (entry) => _buildStatRow(entry.key, entry.value.toString())),
+                  (entry) => _buildStatRow(entry.key, entry.value.toString()),
+                ),
           ],
         ),
       ),

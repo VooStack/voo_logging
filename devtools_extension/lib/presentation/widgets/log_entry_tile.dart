@@ -25,10 +25,10 @@ class LogEntryTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: selected ? theme.colorScheme.primary.withOpacity(0.1) : null,
+          color: selected ? theme.colorScheme.primary.withValues(alpha: 0.1) : null,
           border: Border(
             bottom: BorderSide(
-              color: theme.dividerColor.withOpacity(0.2),
+              color: theme.dividerColor.withValues(alpha: 0.2),
             ),
           ),
         ),
@@ -42,16 +42,15 @@ class LogEntryTile extends StatelessWidget {
                 Text(
                   _formatTimestamp(log.timestamp),
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurface.withOpacity(0.6),
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
                 if (log.category != null) ...[
                   const SizedBox(width: 8),
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.secondary.withOpacity(0.2),
+                      color: theme.colorScheme.secondary.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
@@ -65,10 +64,9 @@ class LogEntryTile extends StatelessWidget {
                 if (log.tag != null) ...[
                   const SizedBox(width: 4),
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.tertiary.withOpacity(0.2),
+                      color: theme.colorScheme.tertiary.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(

@@ -26,10 +26,10 @@ class LogLevelChip extends StatelessWidget {
         ),
         selected: selected,
         onSelected: onTap != null ? (_) => onTap!() : null,
-        backgroundColor: _getColor(level).withOpacity(0.1),
+        backgroundColor: _getColor(level).withValues(alpha: 0.1),
         selectedColor: _getColor(level),
         side: BorderSide(
-          color: _getColor(level).withOpacity(selected ? 1 : 0.3),
+          color: _getColor(level).withValues(alpha: selected ? 1 : 0.3),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

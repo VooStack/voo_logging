@@ -90,7 +90,8 @@ class _LogFilterBarState extends State<LogFilterBar> {
                         : Icons.filter_list,
                   ),
                   label: Text(
-                      _showAdvancedFilters ? 'Hide Filters' : 'Show Filters'),
+                    _showAdvancedFilters ? 'Hide Filters' : 'Show Filters',
+                  ),
                   onPressed: () {
                     setState(() {
                       _showAdvancedFilters = !_showAdvancedFilters;

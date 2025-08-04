@@ -58,7 +58,13 @@ class VooLogger {
       'VooLogger initialized',
       category: 'System',
       tag: 'Init',
-      metadata: {'minimumLevel': minimumLevel.name, 'userId': userId, 'sessionId': _currentSessionId, 'appName': appName, 'appVersion': appVersion},
+      metadata: {
+        'minimumLevel': minimumLevel.name,
+        'userId': userId,
+        'sessionId': _currentSessionId,
+        'appName': appName,
+        'appVersion': appVersion,
+      },
     );
   }
 
@@ -130,7 +136,9 @@ class VooLogger {
 
   /// Enrich metadata with system information
   /// Why? Provides valuable context for debugging
-  static Map<String, dynamic>? _enrichMetadata(Map<String, dynamic>? userMetadata) {
+  static Map<String, dynamic>? _enrichMetadata(
+    Map<String, dynamic>? userMetadata,
+  ) {
     final enriched = <String, dynamic>{};
 
     // Add system info
@@ -161,7 +169,9 @@ class VooLogger {
         name: entry.category ?? 'AwesomeLogger',
         level: _getDevToolsLevel(entry.level),
         error: entry.error,
-        stackTrace: entry.stackTrace != null ? StackTrace.fromString(entry.stackTrace!) : null,
+        stackTrace: entry.stackTrace != null
+            ? StackTrace.fromString(entry.stackTrace!)
+            : null,
         sequenceNumber: entry.timestamp.millisecondsSinceEpoch,
       );
     } catch (e) {
@@ -219,38 +229,111 @@ class VooLogger {
 
   /// Log a verbose message
   /// Use for: Very detailed debugging info (usually disabled in production)
-  static Future<void> verbose(String message, {String? category, String? tag, Map<String, dynamic>? metadata}) async {
-    await _logInternal(message, level: LogLevel.verbose, category: category, tag: tag, metadata: metadata);
+  static Future<void> verbose(
+    String message, {
+    String? category,
+    String? tag,
+    Map<String, dynamic>? metadata,
+  }) async {
+    await _logInternal(
+      message,
+      level: LogLevel.verbose,
+      category: category,
+      tag: tag,
+      metadata: metadata,
+    );
   }
 
   /// Log a debug message
   /// Use for: Development debugging information
-  static Future<void> debug(String message, {String? category, String? tag, Map<String, dynamic>? metadata}) async {
-    await _logInternal(message, level: LogLevel.debug, category: category, tag: tag, metadata: metadata);
+  static Future<void> debug(
+    String message, {
+    String? category,
+    String? tag,
+    Map<String, dynamic>? metadata,
+  }) async {
+    await _logInternal(
+      message,
+      level: LogLevel.debug,
+      category: category,
+      tag: tag,
+      metadata: metadata,
+    );
   }
 
   /// Log an info message
   /// Use for: General application flow information
-  static Future<void> info(String message, {String? category, String? tag, Map<String, dynamic>? metadata}) async {
-    await _logInternal(message, category: category, tag: tag, metadata: metadata);
+  static Future<void> info(
+    String message, {
+    String? category,
+    String? tag,
+    Map<String, dynamic>? metadata,
+  }) async {
+    await _logInternal(
+      message,
+      category: category,
+      tag: tag,
+      metadata: metadata,
+    );
   }
 
   /// Log a warning message
   /// Use for: Unexpected but non-breaking situations
-  static Future<void> warning(String message, {String? category, String? tag, Map<String, dynamic>? metadata}) async {
-    await _logInternal(message, level: LogLevel.warning, category: category, tag: tag, metadata: metadata);
+  static Future<void> warning(
+    String message, {
+    String? category,
+    String? tag,
+    Map<String, dynamic>? metadata,
+  }) async {
+    await _logInternal(
+      message,
+      level: LogLevel.warning,
+      category: category,
+      tag: tag,
+      metadata: metadata,
+    );
   }
 
   /// Log an error message
   /// Use for: Errors that don't crash the app
-  static Future<void> error(String message, {Object? error, StackTrace? stackTrace, String? category, String? tag, Map<String, dynamic>? metadata}) async {
-    await _logInternal(message, level: LogLevel.error, category: category, tag: tag, metadata: metadata, error: error, stackTrace: stackTrace);
+  static Future<void> error(
+    String message, {
+    Object? error,
+    StackTrace? stackTrace,
+    String? category,
+    String? tag,
+    Map<String, dynamic>? metadata,
+  }) async {
+    await _logInternal(
+      message,
+      level: LogLevel.error,
+      category: category,
+      tag: tag,
+      metadata: metadata,
+      error: error,
+      stackTrace: stackTrace,
+    );
   }
 
   /// Log a fatal error message
   /// Use for: Critical errors that might crash the app
-  static Future<void> fatal(String message, {Object? error, StackTrace? stackTrace, String? category, String? tag, Map<String, dynamic>? metadata}) async {
-    await _logInternal(message, level: LogLevel.fatal, category: category, tag: tag, metadata: metadata, error: error, stackTrace: stackTrace);
+  static Future<void> fatal(
+    String message, {
+    Object? error,
+    StackTrace? stackTrace,
+    String? category,
+    String? tag,
+    Map<String, dynamic>? metadata,
+  }) async {
+    await _logInternal(
+      message,
+      level: LogLevel.fatal,
+      category: category,
+      tag: tag,
+      metadata: metadata,
+      error: error,
+      stackTrace: stackTrace,
+    );
   }
 
   /// Generic log method for custom levels
@@ -264,25 +347,40 @@ class VooLogger {
     Object? error,
     StackTrace? stackTrace,
   }) async {
-    await _logInternal(message, level: level, category: category, tag: tag, metadata: metadata, error: error, stackTrace: stackTrace);
+    await _logInternal(
+      message,
+      level: level,
+      category: category,
+      tag: tag,
+      metadata: metadata,
+      error: error,
+      stackTrace: stackTrace,
+    );
   }
 
   // Configuration methods
 
   /// Update the current user ID
   /// Why? User context is crucial for debugging user-specific issues
-  static Future<void> setUserId(String? userId) async => _currentUserId = userId;
+  static Future<void> setUserId(String? userId) async =>
+      _currentUserId = userId;
 
   /// Start a new session
   /// Why? Helps group logs when debugging specific user sessions
   static void startNewSession([String? sessionId]) {
     _currentSessionId = sessionId ?? _generateSessionId();
-    info('New session started', category: 'System', tag: 'Session', metadata: {'sessionId': _currentSessionId});
+    info(
+      'New session started',
+      category: 'System',
+      tag: 'Session',
+      metadata: {'sessionId': _currentSessionId},
+    );
   }
 
   /// Set minimum log level
   /// Why? Control verbosity in different environments (dev vs prod)
-  static Future<void> setMinimumLevel(LogLevel level) async => _minimumLevel = level;
+  static Future<void> setMinimumLevel(LogLevel level) async =>
+      _minimumLevel = level;
 
   /// Enable/disable logging
   /// Why? Quick way to turn off all logging if needed
@@ -321,36 +419,70 @@ class VooLogger {
       [];
 
   /// Get statistics about stored logs
-  static Future<LogStatistics> getStatistics() async => await _storage?.getLogStatistics() ?? LogStatistics(totalLogs: 0, levelCounts: {}, categoryCounts: {});
+  static Future<LogStatistics> getStatistics() async =>
+      await _storage?.getLogStatistics() ??
+      LogStatistics(totalLogs: 0, levelCounts: {}, categoryCounts: {});
 
   /// Get unique categories for filtering UI
-  static Future<List<String>> getCategories() async => await _storage?.getUniqueCategories() ?? [];
+  static Future<List<String>> getCategories() async =>
+      await _storage?.getUniqueCategories() ?? [];
 
   /// Get unique tags for filtering UI
-  static Future<List<String>> getTags() async => await _storage?.getUniqueTags() ?? [];
+  static Future<List<String>> getTags() async =>
+      await _storage?.getUniqueTags() ?? [];
 
   /// Get unique session IDs for filtering UI
-  static Future<List<String>> getSessions() async => await _storage?.getUniqueSessions() ?? [];
+  static Future<List<String>> getSessions() async =>
+      await _storage?.getUniqueSessions() ?? [];
 
   /// Clear stored logs
-  static Future<void> clearLogs({DateTime? olderThan, List<LogLevel>? levels, List<String>? categories}) async {
-    await _storage?.clearLogs(olderThan: olderThan, levels: levels, categories: categories);
+  static Future<void> clearLogs({
+    DateTime? olderThan,
+    List<LogLevel>? levels,
+    List<String>? categories,
+  }) async {
+    await _storage?.clearLogs(
+      olderThan: olderThan,
+      levels: levels,
+      categories: categories,
+    );
   }
 
   /// Export logs as JSON
-  static Future<String> exportLogs({List<LogLevel>? levels, DateTime? startTime, DateTime? endTime}) async =>
-      await _storage?.exportLogs(levels: levels, startTime: startTime, endTime: endTime) ?? '{"logs": [], "totalLogs": 0}';
+  static Future<String> exportLogs({
+    List<LogLevel>? levels,
+    DateTime? startTime,
+    DateTime? endTime,
+  }) async =>
+      await _storage?.exportLogs(
+        levels: levels,
+        startTime: startTime,
+        endTime: endTime,
+      ) ??
+      '{"logs": [], "totalLogs": 0}';
 
   // Utility methods for common logging patterns
 
   /// Log a network request
   /// Why a helper? Network logging is very common and has a standard pattern
-  static Future<void> networkRequest(String method, String url, {Map<String, String>? headers, dynamic body, Map<String, dynamic>? metadata}) async {
+  static Future<void> networkRequest(
+    String method,
+    String url, {
+    Map<String, String>? headers,
+    dynamic body,
+    Map<String, dynamic>? metadata,
+  }) async {
     await info(
       '$method $url',
       category: 'Network',
       tag: 'Request',
-      metadata: {'method': method, 'url': url, 'headers': headers, 'hasBody': body != null, ...?metadata},
+      metadata: {
+        'method': method,
+        'url': url,
+        'headers': headers,
+        'hasBody': body != null,
+        ...?metadata,
+      },
     );
   }
 
@@ -370,30 +502,56 @@ class VooLogger {
       level: level,
       category: 'Network',
       tag: 'Response',
-      metadata: {'statusCode': statusCode, 'url': url, 'duration': duration.inMilliseconds, 'headers': headers, 'contentLength': contentLength, ...?metadata},
+      metadata: {
+        'statusCode': statusCode,
+        'url': url,
+        'duration': duration.inMilliseconds,
+        'headers': headers,
+        'contentLength': contentLength,
+        ...?metadata,
+      },
     );
   }
 
   /// Log user actions for analytics
-  static Future<void> userAction(String action, {String? screen, Map<String, dynamic>? properties}) async {
+  static Future<void> userAction(
+    String action, {
+    String? screen,
+    Map<String, dynamic>? properties,
+  }) async {
     await info(
       'User action: $action',
       category: 'Analytics',
       tag: 'UserAction',
-      metadata: {'action': action, 'screen': screen, 'properties': properties, 'userId': _currentUserId},
+      metadata: {
+        'action': action,
+        'screen': screen,
+        'properties': properties,
+        'userId': _currentUserId,
+      },
     );
   }
 
   /// Log performance metrics
-  static Future<void> performance(String operation, Duration duration, {Map<String, dynamic>? metrics}) async {
-    final level = duration.inMilliseconds > 1000 ? LogLevel.warning : LogLevel.info;
+  static Future<void> performance(
+    String operation,
+    Duration duration, {
+    Map<String, dynamic>? metrics,
+  }) async {
+    final level = duration.inMilliseconds > 1000
+        ? LogLevel.warning
+        : LogLevel.info;
 
     await log(
       '$operation completed in ${duration.inMilliseconds}ms',
       level: level,
       category: 'Performance',
       tag: operation,
-      metadata: {'operation': operation, 'duration': duration.inMilliseconds, 'metrics': metrics},
+      metadata: {
+        'operation': operation,
+        'duration': duration.inMilliseconds,
+        'metrics': metrics,
+      },
     );
   }
 }

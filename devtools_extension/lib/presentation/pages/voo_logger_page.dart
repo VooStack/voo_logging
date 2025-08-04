@@ -108,7 +108,10 @@ class _VooLoggerPageState extends State<VooLoggerPage> {
       );
 
   Widget _buildToolbarActions(
-          BuildContext context, ThemeData theme, LogState state) =>
+    BuildContext context,
+    ThemeData theme,
+    LogState state,
+  ) =>
       Row(
         children: [
           IconButton(
