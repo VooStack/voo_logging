@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:voo_logging/features/logging/domain/entities/log_entry.dart';
-import 'package:voo_logging/features/logging/domain/entities/log_filter.dart';
+import 'package:voo_logging/core/domain/enums/log_level.dart';
+import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
 
 abstract class LogEvent extends Equatable {
   const LogEvent();
@@ -12,16 +12,20 @@ abstract class LogEvent extends Equatable {
 class LoadLogs extends LogEvent {}
 
 class FilterLogsChanged extends LogEvent {
-  final LogFilter filter;
+  final List<LogLevel>? levels;
+  final String? category;
 
-  const FilterLogsChanged(this.filter);
+  const FilterLogsChanged({
+    this.levels,
+    this.category,
+  });
 
   @override
-  List<Object?> get props => [filter];
+  List<Object?> get props => [levels, category];
 }
 
 class LogReceived extends LogEvent {
-  final LogEntry log;
+  final LogEntryModel log;
 
   const LogReceived(this.log);
 
@@ -30,7 +34,7 @@ class LogReceived extends LogEvent {
 }
 
 class SelectLog extends LogEvent {
-  final LogEntry? log;
+  final LogEntryModel? log;
 
   const SelectLog(this.log);
 
@@ -52,7 +56,7 @@ class SearchQueryChanged extends LogEvent {
 }
 
 class StreamChanged extends LogEvent {
-  final Stream<LogEntry> stream;
+  final Stream<LogEntryModel> stream;
 
   const StreamChanged(this.stream);
 

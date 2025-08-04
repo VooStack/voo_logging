@@ -5,7 +5,6 @@ import 'package:voo_logging/features/devtools_extension/presentation/blocs/log_b
 import 'package:voo_logging/features/devtools_extension/presentation/blocs/log_event.dart';
 import 'package:voo_logging/features/devtools_extension/presentation/blocs/log_state.dart';
 import 'package:voo_logging/features/devtools_extension/presentation/widgets/atoms/log_level_chip.dart';
-import 'package:voo_logging/features/logging/domain/entities/log_filter.dart';
 
 class LogFilterBar extends StatefulWidget {
   const LogFilterBar({super.key});
@@ -100,7 +99,7 @@ class _LogFilterBarState extends State<LogFilterBar> {
             ),
             if (_showAdvancedFilters) ...[
               const SizedBox(height: 16),
-              _buildLevelFilters(state.filter),
+              _buildLevelFilters(state),
               const SizedBox(height: 12),
               _buildCategoryAndTagFilters(state),
             ],
@@ -110,8 +109,8 @@ class _LogFilterBarState extends State<LogFilterBar> {
     );
   }
 
-  Widget _buildLevelFilters(LogFilter filter) {
-    final selectedLevels = filter.levels ?? [];
+  Widget _buildLevelFilters(LogState state) {
+    final selectedLevels = state.selectedLevels ?? [];
 
     return Wrap(
       spacing: 8,
@@ -132,9 +131,8 @@ class _LogFilterBarState extends State<LogFilterBar> {
 
             context.read<LogBloc>().add(
                   FilterLogsChanged(
-                    filter.copyWith(
-                      levels: newLevels.isEmpty ? null : newLevels,
-                    ),
+                    levels: newLevels.isEmpty ? null : newLevels,
+                    category: state.selectedCategory,
                   ),
                 );
           },
@@ -148,31 +146,13 @@ class _LogFilterBarState extends State<LogFilterBar> {
           Expanded(
             child: _buildDropdown(
               label: 'Category',
-              value: state.filter.categories?.firstOrNull,
+              value: state.selectedCategory,
               items: state.categories,
               onChanged: (value) {
                 context.read<LogBloc>().add(
                       FilterLogsChanged(
-                        state.filter.copyWith(
-                          categories: value == null ? null : [value],
-                        ),
-                      ),
-                    );
-              },
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: _buildDropdown(
-              label: 'Tag',
-              value: state.filter.tags?.firstOrNull,
-              items: state.tags,
-              onChanged: (value) {
-                context.read<LogBloc>().add(
-                      FilterLogsChanged(
-                        state.filter.copyWith(
-                          tags: value == null ? null : [value],
-                        ),
+                        levels: state.selectedLevels,
+                        category: value,
                       ),
                     );
               },

@@ -1,13 +1,14 @@
 import 'package:equatable/equatable.dart';
-import 'package:voo_logging/features/logging/domain/entities/log_entry.dart';
-import 'package:voo_logging/features/logging/domain/entities/log_filter.dart';
+import 'package:voo_logging/core/domain/enums/log_level.dart';
+import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
 import 'package:voo_logging/features/logging/domain/entities/log_statistics.dart';
 
 class LogState extends Equatable {
-  final List<LogEntry> logs;
-  final List<LogEntry> filteredLogs;
-  final LogEntry? selectedLog;
-  final LogFilter filter;
+  final List<LogEntryModel> logs;
+  final List<LogEntryModel> filteredLogs;
+  final LogEntryModel? selectedLog;
+  final List<LogLevel>? selectedLevels;
+  final String? selectedCategory;
   final bool isLoading;
   final String? error;
   final bool autoScroll;
@@ -21,7 +22,8 @@ class LogState extends Equatable {
     this.logs = const [],
     this.filteredLogs = const [],
     this.selectedLog,
-    this.filter = const LogFilter(),
+    this.selectedLevels,
+    this.selectedCategory,
     this.isLoading = false,
     this.error,
     this.autoScroll = true,
@@ -33,11 +35,12 @@ class LogState extends Equatable {
   });
 
   LogState copyWith({
-    List<LogEntry>? logs,
-    List<LogEntry>? filteredLogs,
-    LogEntry? selectedLog,
+    List<LogEntryModel>? logs,
+    List<LogEntryModel>? filteredLogs,
+    LogEntryModel? selectedLog,
     bool clearSelectedLog = false,
-    LogFilter? filter,
+    List<LogLevel>? selectedLevels,
+    String? selectedCategory,
     bool? isLoading,
     String? error,
     bool clearError = false,
@@ -52,7 +55,8 @@ class LogState extends Equatable {
         logs: logs ?? this.logs,
         filteredLogs: filteredLogs ?? this.filteredLogs,
         selectedLog: clearSelectedLog ? null : (selectedLog ?? this.selectedLog),
-        filter: filter ?? this.filter,
+        selectedLevels: selectedLevels ?? this.selectedLevels,
+        selectedCategory: selectedCategory ?? this.selectedCategory,
         isLoading: isLoading ?? this.isLoading,
         error: clearError ? null : (error ?? this.error),
         autoScroll: autoScroll ?? this.autoScroll,
@@ -64,5 +68,5 @@ class LogState extends Equatable {
       );
 
   @override
-  List<Object?> get props => [logs, filteredLogs, selectedLog, filter, isLoading, error, autoScroll, statistics, categories, tags, sessions, searchQuery];
+  List<Object?> get props => [logs, filteredLogs, selectedLog, selectedLevels, selectedCategory, isLoading, error, autoScroll, statistics, categories, tags, sessions, searchQuery];
 }

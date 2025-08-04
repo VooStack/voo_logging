@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:voo_logging/core/domain/extensions/log_level_extensions.dart';
 import 'package:voo_logging/features/devtools_extension/presentation/widgets/atoms/log_level_chip.dart';
-import 'package:voo_logging/features/logging/domain/entities/log_entry.dart';
+import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
 
 class LogEntryTile extends StatelessWidget {
-  final LogEntry log;
+  final LogEntryModel log;
   final bool selected;
   final VoidCallback? onTap;
 
