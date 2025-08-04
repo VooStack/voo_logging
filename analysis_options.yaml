@@ -29,6 +29,7 @@ analyzer:
     strict_raw_type: ignore
     inference_failure_on_function_invocation: ignore
     avoid_positional_boolean_parameters: ignore
+    inference_failure_on_instance_creation: ignore
 
   strong-mode:
     implicit-casts: false

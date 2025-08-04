@@ -44,7 +44,7 @@ void main() {
 
     test('should filter by log level', () {
       final filtered = testLogs.where((log) => log.level == LogLevel.error).toList();
-      
+
       expect(filtered.length, 1);
       expect(filtered.first.message, 'Error log');
     });
@@ -52,24 +52,22 @@ void main() {
     test('should filter by multiple log levels', () {
       final levels = [LogLevel.info, LogLevel.warning];
       final filtered = testLogs.where((log) => levels.contains(log.level)).toList();
-      
+
       expect(filtered.length, 2);
       expect(filtered.map((log) => log.message), containsAll(['Info log', 'Warning log']));
     });
 
     test('should filter by category', () {
       final filtered = testLogs.where((log) => log.category == 'Category1').toList();
-      
+
       expect(filtered.length, 2);
       expect(filtered.every((log) => log.category == 'Category1'), true);
     });
 
     test('should filter by search query', () {
-      final query = 'error';
-      final filtered = testLogs.where((log) => 
-        log.message.toLowerCase().contains(query.toLowerCase())
-      ).toList();
-      
+      const query = 'error';
+      final filtered = testLogs.where((log) => log.message.toLowerCase().contains(query.toLowerCase())).toList();
+
       expect(filtered.length, 1);
       expect(filtered.first.message, 'Error log');
     });

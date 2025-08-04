@@ -173,7 +173,7 @@ void main() {
 
         // Wait for logs to be added
         await Future.delayed(const Duration(milliseconds: 10));
-        
+
         // Filter by error level
         logBloc.add(const FilterLogsChanged(levels: [LogLevel.error]));
 
@@ -183,8 +183,8 @@ void main() {
         // Check final state
         expect(logBloc.state.filteredLogs.length, 1);
         expect(logBloc.state.filteredLogs.first.level, LogLevel.error);
-        
-        logBloc.close();
+
+        await logBloc.close();
       });
 
       test('filters by category correctly', () async {
@@ -199,7 +199,7 @@ void main() {
 
         // Wait for logs to be added
         await Future.delayed(const Duration(milliseconds: 10));
-        
+
         // Filter by Test category
         logBloc.add(const FilterLogsChanged(category: 'Test'));
 
@@ -209,8 +209,8 @@ void main() {
         // Check final state
         expect(logBloc.state.filteredLogs.length, 1);
         expect(logBloc.state.filteredLogs.first.category, 'Test');
-        
-        logBloc.close();
+
+        await logBloc.close();
       });
     });
   });
