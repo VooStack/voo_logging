@@ -1,0 +1,5 @@
+name: foo
+version: 0.0.2
+issueTracker: https://github.com/voostack/voo_logging/issues
+materialIconCodePoint: '0xe0b1'
+requiresConnection: true
