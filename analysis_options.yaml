@@ -45,7 +45,6 @@ formatter:
 linter:
   rules:
     always_declare_return_types: true
-    always_require_non_null_named_parameters: true
     always_use_package_imports: true
     annotate_overrides: true
     avoid_bool_literals_in_conditional_expressions: true
@@ -61,7 +60,6 @@ linter:
     avoid_redundant_argument_values: true
     avoid_relative_lib_imports: true
     avoid_return_types_on_setters: true
-    avoid_returning_null_for_future: true
     avoid_returning_null_for_void: true
     avoid_shadowing_type_parameters: true
     avoid_single_cascade_in_expression_statements: true
@@ -89,7 +87,6 @@ linter:
     empty_statements: true
     exhaustive_cases: true
     file_names: true
-    invariant_booleans: true
     leading_newlines_in_multiline_strings: true
     library_names: true
     library_prefixes: true
@@ -110,7 +107,6 @@ linter:
     prefer_const_declarations: true
     prefer_const_literals_to_create_immutables: true
     prefer_contains: true
-    prefer_equal_for_default_values: true
     prefer_expression_function_bodies: true
     prefer_final_fields: true
     prefer_final_in_for_each: true

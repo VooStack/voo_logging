@@ -5,8 +5,8 @@ import 'dart:math';
 
 import 'package:voo_logging/src/data/enums/log_level.dart';
 import 'package:voo_logging/src/data/sources/local/local_log_storage.dart';
-import 'package:voo_logging/src/domain/entities/Log_statistics.dart';
 import 'package:voo_logging/src/domain/entities/log_entry.dart';
+import 'package:voo_logging/src/domain/entities/log_statistics.dart';
 
 /// The main logger class that provides the public API
 ///
