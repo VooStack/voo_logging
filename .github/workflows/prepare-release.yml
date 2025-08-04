@@ -1,0 +1,145 @@
+name: Prepare Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: 'Version bump type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      branch:
+        description: 'Branch to create release from'
+        required: false
+        default: 'main'
+
+jobs:
+  prepare-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - uses: dart-lang/setup-dart@v1
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+      
+      - name: Get current version
+        id: current_version
+        run: |
+          CURRENT_VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //')
+          echo "current=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+      
+      - name: Bump version
+        id: bump_version
+        run: |
+          CURRENT_VERSION="${{ steps.current_version.outputs.current }}"
+          VERSION_TYPE="${{ github.event.inputs.version_type }}"
+          
+          # Split version into parts
+          IFS='.' read -r -a VERSION_PARTS <<< "$CURRENT_VERSION"
+          MAJOR="${VERSION_PARTS[0]}"
+          MINOR="${VERSION_PARTS[1]}"
+          PATCH="${VERSION_PARTS[2]}"
+          
+          # Bump version based on type
+          case $VERSION_TYPE in
+            major)
+              MAJOR=$((MAJOR + 1))
+              MINOR=0
+              PATCH=0
+              ;;
+            minor)
+              MINOR=$((MINOR + 1))
+              PATCH=0
+              ;;
+            patch)
+              PATCH=$((PATCH + 1))
+              ;;
+          esac
+          
+          NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+          echo "new=$NEW_VERSION" >> $GITHUB_OUTPUT
+      
+      - name: Update version in pubspec.yaml
+        run: |
+          sed -i "s/^version: .*/version: ${{ steps.bump_version.outputs.new }}/" pubspec.yaml
+      
+      - name: Update CHANGELOG.md
+        run: |
+          NEW_VERSION="${{ steps.bump_version.outputs.new }}"
+          DATE=$(date +%Y-%m-%d)
+          
+          # Create new changelog entry
+          cat > CHANGELOG.tmp.md << EOF
+          ## $NEW_VERSION - $DATE
+
+          ### Added
+          - 
+
+          ### Changed
+          - 
+
+          ### Fixed
+          - 
+
+          ### Removed
+          - 
+
+          EOF
+          
+          # Append existing changelog
+          tail -n +2 CHANGELOG.md >> CHANGELOG.tmp.md
+          mv CHANGELOG.tmp.md CHANGELOG.md
+      
+      - name: Create release branch
+        run: |
+          BRANCH_NAME="release/${{ steps.bump_version.outputs.new }}"
+          git checkout -b $BRANCH_NAME
+      
+      - name: Commit changes
+        run: |
+          git add pubspec.yaml CHANGELOG.md
+          git commit -m "chore: prepare release ${{ steps.bump_version.outputs.new }}"
+      
+      - name: Push release branch
+        run: |
+          git push origin release/${{ steps.bump_version.outputs.new }}
+      
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: release/${{ steps.bump_version.outputs.new }}
+          base: ${{ github.event.inputs.branch }}
+          title: "Release ${{ steps.bump_version.outputs.new }}"
+          body: |
+            ## Release ${{ steps.bump_version.outputs.new }}
+            
+            This PR prepares the release for version ${{ steps.bump_version.outputs.new }}.
+            
+            ### Checklist
+            - [ ] Update CHANGELOG.md with release notes
+            - [ ] Review version bump
+            - [ ] Run final tests
+            - [ ] Merge this PR
+            - [ ] Create and push tag: `git tag v${{ steps.bump_version.outputs.new }} && git push origin v${{ steps.bump_version.outputs.new }}`
+            
+            ### Next Steps
+            After merging this PR and creating the tag, the publish workflow will automatically:
+            1. Run tests
+            2. Publish to pub.dev
+            3. Create a GitHub release

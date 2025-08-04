@@ -1,6 +1,7 @@
 # Voo Logging
 
 [![Flutter Package CI](https://github.com/voostack/voo_logging/actions/workflows/dart.yml/badge.svg)](https://github.com/voostack/voo_logging/actions/workflows/dart.yml)
+[![Publish](https://github.com/voostack/voo_logging/actions/workflows/publish.yml/badge.svg)](https://github.com/voostack/voo_logging/actions/workflows/publish.yml)
 [![pub package](https://img.shields.io/pub/v/voo_logging.svg)](https://pub.dev/packages/voo_logging)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
