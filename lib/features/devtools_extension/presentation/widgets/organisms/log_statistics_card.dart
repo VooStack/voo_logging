@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:voo_logging/core/domain/enums/log_level.dart';
-import 'package:voo_logging/core/domain/extensions/log_level_extensions.dart';
+import 'package:voo_logging/features/devtools_extension/presentation/widgets/atoms/log_level_row.dart';
 import 'package:voo_logging/features/devtools_extension/presentation/widgets/atoms/stat_item.dart';
+import 'package:voo_logging/features/devtools_extension/presentation/widgets/atoms/stat_row.dart';
 import 'package:voo_logging/features/devtools_extension/presentation/widgets/molecules/stat_card.dart';
 import 'package:voo_logging/features/logging/domain/entities/log_statistics.dart';
 
@@ -41,102 +42,43 @@ class LogStatisticsCard extends StatelessWidget {
     );
   }
 
-  Widget _buildLevelBreakdown(ThemeData theme) => Card(
-    child: Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Log Levels', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
-          ...LogLevel.values.map((level) {
-            final count = statistics.levelCounts[level.name] ?? 0;
-            if (count == 0) return const SizedBox.shrink();
-
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4),
-              child: Row(
-                children: [
-                  Container(
-                    width: 12,
-                    height: 12,
-                    decoration: BoxDecoration(color: _getLevelColor(level), shape: BoxShape.circle),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(child: Text(level.displayName)),
-                  Text(count.toString(), style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
-                ],
-              ),
-            );
-          }),
-        ],
-      ),
-    ),
+  Widget _buildLevelBreakdown(ThemeData theme) => StatCard(
+    title: 'Log Levels',
+    children: LogLevel.values
+        .map((level) {
+          final count = statistics.levelCounts[level.name] ?? 0;
+          if (count == 0) return null;
+          return LogLevelRow(level: level, count: count);
+        })
+        .where((widget) => widget != null)
+        .cast<Widget>()
+        .toList(),
   );
 
   Widget _buildTopCategories(ThemeData theme) {
     final sortedCategories = statistics.categoryCounts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Top Categories', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            ...sortedCategories.take(5).map((entry) => _buildStatRow(entry.key, entry.value.toString())),
-          ],
-        ),
-      ),
+    return StatCard(
+      title: 'Top Categories',
+      children: sortedCategories
+          .take(5)
+          .map((entry) => StatRow(label: entry.key, value: entry.value.toString()))
+          .toList(),
     );
   }
 
   Widget _buildTopTags(ThemeData theme) {
     final sortedTags = statistics.tagCounts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Top Tags', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            ...sortedTags.take(5).map((entry) => _buildStatRow(entry.key, entry.value.toString())),
-          ],
-        ),
-      ),
+    return StatCard(
+      title: 'Top Tags',
+      children: sortedTags
+          .take(5)
+          .map((entry) => StatRow(label: entry.key, value: entry.value.toString()))
+          .toList(),
     );
   }
 
-  Widget _buildStatRow(String label, String value) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 2),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(label),
-        Text(value, style: const TextStyle(fontWeight: FontWeight.w500)),
-      ],
-    ),
-  );
-
-  Color _getLevelColor(LogLevel level) {
-    switch (level) {
-      case LogLevel.verbose:
-        return Colors.grey;
-      case LogLevel.debug:
-        return Colors.blue;
-      case LogLevel.info:
-        return Colors.green;
-      case LogLevel.warning:
-        return Colors.orange;
-      case LogLevel.error:
-        return Colors.red;
-      case LogLevel.fatal:
-        return Colors.purple;
-    }
-  }
 
   String _formatDuration(Duration duration) {
     if (duration.inDays > 0) {

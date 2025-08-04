@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:voo_logging/core/domain/extensions/log_level_extensions.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/widgets/atoms/log_level_chip.dart';
+import 'package:voo_logging/features/devtools_extension/presentation/widgets/atoms/detail_section.dart';
+import 'package:voo_logging/features/devtools_extension/presentation/widgets/atoms/info_row.dart';
+import 'package:voo_logging/features/devtools_extension/presentation/widgets/molecules/log_detail_header.dart';
 import 'package:voo_logging/features/logging/data/models/log_entry_model.dart';
 
 class LogDetailsPanel extends StatelessWidget {
@@ -24,42 +26,44 @@ class LogDetailsPanel extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildHeader(context, theme),
+          LogDetailHeader(log: log, onCopyAll: () => _copyAllToClipboard(context), onClose: onClose),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSection('Message', SelectableText(log.message), theme),
+                  DetailSection(title: 'Message', content: SelectableText(log.message)),
                   const SizedBox(height: 16),
-                  _buildInfoRow('Timestamp', log.timestamp.toIso8601String(), theme),
-                  _buildInfoRow('Level', log.level.displayName, theme),
-                  if (log.category != null) _buildInfoRow('Category', log.category!, theme),
-                  if (log.tag != null) _buildInfoRow('Tag', log.tag!, theme),
-                  if (log.userId != null) _buildInfoRow('User ID', log.userId!, theme),
-                  if (log.sessionId != null) _buildInfoRow('Session ID', log.sessionId!, theme),
+                  InfoRow(label: 'Timestamp', value: log.timestamp.toIso8601String()),
+                  InfoRow(label: 'Level', value: log.level.displayName),
+                  if (log.category != null) InfoRow(label: 'Category', value: log.category!),
+                  if (log.tag != null) InfoRow(label: 'Tag', value: log.tag!),
+                  if (log.userId != null) InfoRow(label: 'User ID', value: log.userId!),
+                  if (log.sessionId != null) InfoRow(label: 'Session ID', value: log.sessionId!),
                   if (log.error != null) ...[
                     const SizedBox(height: 16),
-                    _buildSection('Error', SelectableText(log.error.toString(), style: TextStyle(color: theme.colorScheme.error)), theme),
+                    DetailSection(
+                      title: 'Error',
+                      content: SelectableText(log.error.toString(), style: TextStyle(color: theme.colorScheme.error)),
+                    ),
                   ],
                   if (log.stackTrace != null) ...[
                     const SizedBox(height: 16),
-                    _buildSection(
-                      'Stack Trace',
-                      Container(
+                    DetailSection(
+                      title: 'Stack Trace',
+                      content: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(color: theme.colorScheme.onSurface.withValues(alpha: 0.05), borderRadius: BorderRadius.circular(4)),
                         child: SelectableText(log.stackTrace!, style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace')),
                       ),
-                      theme,
                     ),
                   ],
                   if (log.metadata != null && log.metadata!.isNotEmpty) ...[
                     const SizedBox(height: 16),
-                    _buildSection(
-                      'Metadata',
-                      Container(
+                    DetailSection(
+                      title: 'Metadata',
+                      content: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(color: theme.colorScheme.onSurface.withValues(alpha: 0.05), borderRadius: BorderRadius.circular(4)),
                         child: SelectableText(
@@ -67,7 +71,6 @@ class LogDetailsPanel extends StatelessWidget {
                           style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
                         ),
                       ),
-                      theme,
                     ),
                   ],
                 ],
@@ -79,45 +82,6 @@ class LogDetailsPanel extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, ThemeData theme) => Container(
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      color: theme.colorScheme.surface,
-      border: Border(bottom: BorderSide(color: theme.dividerColor)),
-    ),
-    child: Row(
-      children: [
-        LogLevelChip(level: log.level),
-        const SizedBox(width: 8),
-        Expanded(child: Text('Log Details', style: theme.textTheme.titleMedium)),
-        IconButton(icon: const Icon(Icons.copy), onPressed: () => _copyAllToClipboard(context), tooltip: 'Copy all details'),
-        if (onClose != null) IconButton(icon: const Icon(Icons.close), onPressed: onClose, tooltip: 'Close details'),
-      ],
-    ),
-  );
-
-  Widget _buildSection(String title, Widget content, ThemeData theme) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(title, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-      const SizedBox(height: 8),
-      content,
-    ],
-  );
-
-  Widget _buildInfoRow(String label, String value, ThemeData theme) => Padding(
-    padding: const EdgeInsets.symmetric(vertical: 4),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 120,
-          child: Text('$label:', style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500)),
-        ),
-        Expanded(child: SelectableText(value, style: theme.textTheme.bodySmall)),
-      ],
-    ),
-  );
 
   void _copyAllToClipboard(BuildContext context) {
     final buffer = StringBuffer();

@@ -4,7 +4,8 @@ import 'package:voo_logging/core/domain/enums/log_level.dart';
 import 'package:voo_logging/features/devtools_extension/presentation/blocs/log_bloc.dart';
 import 'package:voo_logging/features/devtools_extension/presentation/blocs/log_event.dart';
 import 'package:voo_logging/features/devtools_extension/presentation/blocs/log_state.dart';
-import 'package:voo_logging/features/devtools_extension/presentation/widgets/atoms/log_level_chip.dart';
+import 'package:voo_logging/features/devtools_extension/presentation/widgets/atoms/level_filters_widget.dart';
+import 'package:voo_logging/features/devtools_extension/presentation/widgets/atoms/dropdown_field.dart';
 
 class LogFilterBar extends StatefulWidget {
   const LogFilterBar({super.key});
@@ -86,9 +87,40 @@ class _LogFilterBarState extends State<LogFilterBar> {
             ),
             if (_showAdvancedFilters) ...[
               const SizedBox(height: 16),
-              _buildLevelFilters(state),
+              LevelFiltersWidget(
+                selectedLevels: state.selectedLevels ?? [],
+                onLevelToggled: (level) {
+                  final selectedLevels = state.selectedLevels ?? [];
+                  final newLevels = List<LogLevel>.from(selectedLevels);
+                  if (selectedLevels.contains(level)) {
+                    newLevels.remove(level);
+                  } else {
+                    newLevels.add(level);
+                  }
+                  context.read<LogBloc>().add(FilterLogsChanged(
+                    levels: newLevels.isEmpty ? null : newLevels,
+                    category: state.selectedCategory,
+                  ));
+                },
+              ),
               const SizedBox(height: 12),
-              _buildCategoryAndTagFilters(state),
+              Row(
+                children: [
+                  Expanded(
+                    child: DropdownField(
+                      label: 'Category',
+                      value: state.selectedCategory,
+                      items: state.categories,
+                      onChanged: (value) {
+                        context.read<LogBloc>().add(FilterLogsChanged(
+                          levels: state.selectedLevels,
+                          category: value,
+                        ));
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ],
           ],
         ),
@@ -96,60 +128,4 @@ class _LogFilterBarState extends State<LogFilterBar> {
     );
   }
 
-  Widget _buildLevelFilters(LogState state) {
-    final selectedLevels = state.selectedLevels ?? [];
-
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: LogLevel.values.map((level) {
-        final isSelected = selectedLevels.contains(level);
-
-        return LogLevelChip(
-          level: level,
-          selected: isSelected,
-          onTap: () {
-            final newLevels = List<LogLevel>.from(selectedLevels);
-            if (isSelected) {
-              newLevels.remove(level);
-            } else {
-              newLevels.add(level);
-            }
-
-            context.read<LogBloc>().add(FilterLogsChanged(levels: newLevels.isEmpty ? null : newLevels, category: state.selectedCategory));
-          },
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildCategoryAndTagFilters(LogState state) => Row(
-    children: [
-      Expanded(
-        child: _buildDropdown(
-          label: 'Category',
-          value: state.selectedCategory,
-          items: state.categories,
-          onChanged: (value) {
-            context.read<LogBloc>().add(FilterLogsChanged(levels: state.selectedLevels, category: value));
-          },
-        ),
-      ),
-    ],
-  );
-
-  Widget _buildDropdown({required String label, required String? value, required List<String> items, required ValueChanged<String?> onChanged}) =>
-      DropdownButtonFormField<String>(
-        value: value,
-        decoration: InputDecoration(
-          labelText: label,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        ),
-        items: [
-          const DropdownMenuItem(child: Text('All')),
-          ...items.map((item) => DropdownMenuItem(value: item, child: Text(item))),
-        ],
-        onChanged: onChanged,
-      );
 }

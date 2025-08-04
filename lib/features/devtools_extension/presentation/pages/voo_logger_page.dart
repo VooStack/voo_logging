@@ -36,7 +36,16 @@ class _VooLoggerPageState extends State<VooLoggerPage> {
     return BlocConsumer<LogBloc, LogState>(
       listener: (context, state) {
         if (state.autoScroll && _scrollController.hasClients) {
-          _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
+          // Schedule scroll after the frame is rendered to ensure new logs are displayed
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (_scrollController.hasClients) {
+              _scrollController.animateTo(
+                _scrollController.position.maxScrollExtent,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeOut,
+              );
+            }
+          });
         }
       },
       builder: (context, state) => Scaffold(
@@ -207,7 +216,13 @@ class _VooLoggerPageState extends State<VooLoggerPage> {
       builder: (context) => AlertDialog(
         title: const Text('Log Statistics'),
         content: state.statistics != null
-            ? SizedBox(width: 400, child: LogStatisticsCard(statistics: state.statistics!))
+            ? SizedBox(
+                width: 400,
+                height: MediaQuery.of(context).size.height * 0.7,
+                child: SingleChildScrollView(
+                  child: LogStatisticsCard(statistics: state.statistics!),
+                ),
+              )
             : const Text('No statistics available'),
         actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Close'))],
       ),
