@@ -15,10 +15,7 @@ class FilterLogsChanged extends LogEvent {
   final List<LogLevel>? levels;
   final String? category;
 
-  const FilterLogsChanged({
-    this.levels,
-    this.category,
-  });
+  const FilterLogsChanged({this.levels, this.category});
 
   @override
   List<Object?> get props => [levels, category];

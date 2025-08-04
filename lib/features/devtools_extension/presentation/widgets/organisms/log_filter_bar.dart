@@ -45,11 +45,7 @@ class _LogFilterBarState extends State<LogFilterBar> {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: theme.colorScheme.surface,
-          border: Border(
-            bottom: BorderSide(
-              color: theme.dividerColor,
-            ),
-          ),
+          border: Border(bottom: BorderSide(color: theme.dividerColor)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,24 +67,15 @@ class _LogFilterBarState extends State<LogFilterBar> {
                               },
                             )
                           : null,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     ),
                   ),
                 ),
                 const SizedBox(width: 16),
                 TextButton.icon(
-                  icon: Icon(
-                    _showAdvancedFilters ? Icons.filter_list_off : Icons.filter_list,
-                  ),
-                  label: Text(
-                    _showAdvancedFilters ? 'Hide Filters' : 'Show Filters',
-                  ),
+                  icon: Icon(_showAdvancedFilters ? Icons.filter_list_off : Icons.filter_list),
+                  label: Text(_showAdvancedFilters ? 'Hide Filters' : 'Show Filters'),
                   onPressed: () {
                     setState(() {
                       _showAdvancedFilters = !_showAdvancedFilters;
@@ -129,12 +116,7 @@ class _LogFilterBarState extends State<LogFilterBar> {
               newLevels.add(level);
             }
 
-            context.read<LogBloc>().add(
-                  FilterLogsChanged(
-                    levels: newLevels.isEmpty ? null : newLevels,
-                    category: state.selectedCategory,
-                  ),
-                );
+            context.read<LogBloc>().add(FilterLogsChanged(levels: newLevels.isEmpty ? null : newLevels, category: state.selectedCategory));
           },
         );
       }).toList(),
@@ -142,53 +124,31 @@ class _LogFilterBarState extends State<LogFilterBar> {
   }
 
   Widget _buildCategoryAndTagFilters(LogState state) => Row(
-        children: [
-          Expanded(
-            child: _buildDropdown(
-              label: 'Category',
-              value: state.selectedCategory,
-              items: state.categories,
-              onChanged: (value) {
-                context.read<LogBloc>().add(
-                      FilterLogsChanged(
-                        levels: state.selectedLevels,
-                        category: value,
-                      ),
-                    );
-              },
-            ),
-          ),
-        ],
-      );
+    children: [
+      Expanded(
+        child: _buildDropdown(
+          label: 'Category',
+          value: state.selectedCategory,
+          items: state.categories,
+          onChanged: (value) {
+            context.read<LogBloc>().add(FilterLogsChanged(levels: state.selectedLevels, category: value));
+          },
+        ),
+      ),
+    ],
+  );
 
-  Widget _buildDropdown({
-    required String label,
-    required String? value,
-    required List<String> items,
-    required ValueChanged<String?> onChanged,
-  }) =>
+  Widget _buildDropdown({required String label, required String? value, required List<String> items, required ValueChanged<String?> onChanged}) =>
       DropdownButtonFormField<String>(
         value: value,
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 12,
-          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         ),
         items: [
-          const DropdownMenuItem(
-            child: Text('All'),
-          ),
-          ...items.map(
-            (item) => DropdownMenuItem(
-              value: item,
-              child: Text(item),
-            ),
-          ),
+          const DropdownMenuItem(child: Text('All')),
+          ...items.map((item) => DropdownMenuItem(value: item, child: Text(item))),
         ],
         onChanged: onChanged,
       );

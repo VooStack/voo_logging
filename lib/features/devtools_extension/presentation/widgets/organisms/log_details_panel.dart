@@ -10,11 +10,7 @@ class LogDetailsPanel extends StatelessWidget {
   final LogEntryModel log;
   final VoidCallback? onClose;
 
-  const LogDetailsPanel({
-    super.key,
-    required this.log,
-    this.onClose,
-  });
+  const LogDetailsPanel({super.key, required this.log, this.onClose});
 
   @override
   Widget build(BuildContext context) {
@@ -23,11 +19,7 @@ class LogDetailsPanel extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: theme.colorScheme.surface,
-        border: Border(
-          left: BorderSide(
-            color: theme.dividerColor,
-          ),
-        ),
+        border: Border(left: BorderSide(color: theme.dividerColor)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,17 +31,9 @@ class LogDetailsPanel extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSection(
-                    'Message',
-                    SelectableText(log.message),
-                    theme,
-                  ),
+                  _buildSection('Message', SelectableText(log.message), theme),
                   const SizedBox(height: 16),
-                  _buildInfoRow(
-                    'Timestamp',
-                    log.timestamp.toIso8601String(),
-                    theme,
-                  ),
+                  _buildInfoRow('Timestamp', log.timestamp.toIso8601String(), theme),
                   _buildInfoRow('Level', log.level.displayName, theme),
                   if (log.category != null) _buildInfoRow('Category', log.category!, theme),
                   if (log.tag != null) _buildInfoRow('Tag', log.tag!, theme),
@@ -57,14 +41,7 @@ class LogDetailsPanel extends StatelessWidget {
                   if (log.sessionId != null) _buildInfoRow('Session ID', log.sessionId!, theme),
                   if (log.error != null) ...[
                     const SizedBox(height: 16),
-                    _buildSection(
-                      'Error',
-                      SelectableText(
-                        log.error.toString(),
-                        style: TextStyle(color: theme.colorScheme.error),
-                      ),
-                      theme,
-                    ),
+                    _buildSection('Error', SelectableText(log.error.toString(), style: TextStyle(color: theme.colorScheme.error)), theme),
                   ],
                   if (log.stackTrace != null) ...[
                     const SizedBox(height: 16),
@@ -72,16 +49,8 @@ class LogDetailsPanel extends StatelessWidget {
                       'Stack Trace',
                       Container(
                         padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.onSurface.withValues(alpha: 0.05),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: SelectableText(
-                          log.stackTrace!,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            fontFamily: 'monospace',
-                          ),
-                        ),
+                        decoration: BoxDecoration(color: theme.colorScheme.onSurface.withValues(alpha: 0.05), borderRadius: BorderRadius.circular(4)),
+                        child: SelectableText(log.stackTrace!, style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace')),
                       ),
                       theme,
                     ),
@@ -92,15 +61,10 @@ class LogDetailsPanel extends StatelessWidget {
                       'Metadata',
                       Container(
                         padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.onSurface.withValues(alpha: 0.05),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
+                        decoration: BoxDecoration(color: theme.colorScheme.onSurface.withValues(alpha: 0.05), borderRadius: BorderRadius.circular(4)),
                         child: SelectableText(
                           const JsonEncoder.withIndent('  ').convert(log.metadata),
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            fontFamily: 'monospace',
-                          ),
+                          style: theme.textTheme.bodySmall?.copyWith(fontFamily: 'monospace'),
                         ),
                       ),
                       theme,
@@ -116,77 +80,44 @@ class LogDetailsPanel extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context, ThemeData theme) => Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
-          border: Border(
-            bottom: BorderSide(
-              color: theme.dividerColor,
-            ),
-          ),
-        ),
-        child: Row(
-          children: [
-            LogLevelChip(level: log.level),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                'Log Details',
-                style: theme.textTheme.titleMedium,
-              ),
-            ),
-            IconButton(
-              icon: const Icon(Icons.copy),
-              onPressed: () => _copyAllToClipboard(context),
-              tooltip: 'Copy all details',
-            ),
-            if (onClose != null)
-              IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: onClose,
-                tooltip: 'Close details',
-              ),
-          ],
-        ),
-      );
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: theme.colorScheme.surface,
+      border: Border(bottom: BorderSide(color: theme.dividerColor)),
+    ),
+    child: Row(
+      children: [
+        LogLevelChip(level: log.level),
+        const SizedBox(width: 8),
+        Expanded(child: Text('Log Details', style: theme.textTheme.titleMedium)),
+        IconButton(icon: const Icon(Icons.copy), onPressed: () => _copyAllToClipboard(context), tooltip: 'Copy all details'),
+        if (onClose != null) IconButton(icon: const Icon(Icons.close), onPressed: onClose, tooltip: 'Close details'),
+      ],
+    ),
+  );
 
   Widget _buildSection(String title, Widget content, ThemeData theme) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: theme.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
-          content,
-        ],
-      );
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(title, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+      const SizedBox(height: 8),
+      content,
+    ],
+  );
 
   Widget _buildInfoRow(String label, String value, ThemeData theme) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              width: 120,
-              child: Text(
-                '$label:',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            Expanded(
-              child: SelectableText(
-                value,
-                style: theme.textTheme.bodySmall,
-              ),
-            ),
-          ],
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 120,
+          child: Text('$label:', style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500)),
         ),
-      );
+        Expanded(child: SelectableText(value, style: theme.textTheme.bodySmall)),
+      ],
+    ),
+  );
 
   void _copyAllToClipboard(BuildContext context) {
     final buffer = StringBuffer();
@@ -214,11 +145,6 @@ class LogDetailsPanel extends StatelessWidget {
 
     Clipboard.setData(ClipboardData(text: buffer.toString()));
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Log details copied to clipboard'),
-        duration: Duration(seconds: 2),
-      ),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Log details copied to clipboard'), duration: Duration(seconds: 2)));
   }
 }

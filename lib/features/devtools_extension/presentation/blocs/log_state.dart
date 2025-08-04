@@ -50,23 +50,36 @@ class LogState extends Equatable {
     List<String>? tags,
     List<String>? sessions,
     String? searchQuery,
-  }) =>
-      LogState(
-        logs: logs ?? this.logs,
-        filteredLogs: filteredLogs ?? this.filteredLogs,
-        selectedLog: clearSelectedLog ? null : (selectedLog ?? this.selectedLog),
-        selectedLevels: selectedLevels ?? this.selectedLevels,
-        selectedCategory: selectedCategory ?? this.selectedCategory,
-        isLoading: isLoading ?? this.isLoading,
-        error: clearError ? null : (error ?? this.error),
-        autoScroll: autoScroll ?? this.autoScroll,
-        statistics: statistics ?? this.statistics,
-        categories: categories ?? this.categories,
-        tags: tags ?? this.tags,
-        sessions: sessions ?? this.sessions,
-        searchQuery: searchQuery ?? this.searchQuery,
-      );
+  }) => LogState(
+    logs: logs ?? this.logs,
+    filteredLogs: filteredLogs ?? this.filteredLogs,
+    selectedLog: clearSelectedLog ? null : (selectedLog ?? this.selectedLog),
+    selectedLevels: selectedLevels ?? this.selectedLevels,
+    selectedCategory: selectedCategory ?? this.selectedCategory,
+    isLoading: isLoading ?? this.isLoading,
+    error: clearError ? null : (error ?? this.error),
+    autoScroll: autoScroll ?? this.autoScroll,
+    statistics: statistics ?? this.statistics,
+    categories: categories ?? this.categories,
+    tags: tags ?? this.tags,
+    sessions: sessions ?? this.sessions,
+    searchQuery: searchQuery ?? this.searchQuery,
+  );
 
   @override
-  List<Object?> get props => [logs, filteredLogs, selectedLog, selectedLevels, selectedCategory, isLoading, error, autoScroll, statistics, categories, tags, sessions, searchQuery];
+  List<Object?> get props => [
+    logs,
+    filteredLogs,
+    selectedLog,
+    selectedLevels,
+    selectedCategory,
+    isLoading,
+    error,
+    autoScroll,
+    statistics,
+    categories,
+    tags,
+    sessions,
+    searchQuery,
+  ];
 }

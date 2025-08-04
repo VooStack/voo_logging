@@ -8,23 +8,11 @@ void registerVooLoggerExtension() {
     // Register the extension
     developer.registerExtension(
       'ext.voo_logger.getVersion',
-      (method, parameters) async {
-        return developer.ServiceExtensionResponse.result(
-          '{"version": "1.0.0", "supported": true}',
-        );
-      },
+      (method, parameters) async => developer.ServiceExtensionResponse.result('{"version": "1.0.0", "supported": true}'),
     );
-    
-    developer.log(
-      'Voo Logger extension registered successfully',
-      name: 'VooLogger',
-      level: 800,
-    );
+
+    developer.log('Voo Logger extension registered successfully', name: 'VooLogger', level: 800);
   } catch (e) {
-    developer.log(
-      'Failed to register Voo Logger extension: $e',
-      name: 'VooLogger',
-      level: 1000,
-    );
+    developer.log('Failed to register Voo Logger extension: $e', name: 'VooLogger', level: 1000);
   }
 }

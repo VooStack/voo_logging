@@ -35,10 +35,5 @@ class LogStatistics {
   }
 
   /// Factory method to create empty statistics
-  factory LogStatistics.empty() => LogStatistics(
-        totalLogs: 0,
-        levelCounts: {},
-        categoryCounts: {},
-        tagCounts: {},
-      );
+  factory LogStatistics.empty() => LogStatistics(totalLogs: 0, levelCounts: {}, categoryCounts: {}, tagCounts: {});
 }

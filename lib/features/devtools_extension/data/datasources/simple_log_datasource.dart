@@ -13,9 +13,7 @@ class SimpleLogDataSource {
   Timer? _pollTimer;
   int _logCounter = 0;
 
-  SimpleLogDataSource({
-    this.maxCacheSize = 10000,
-  }) {
+  SimpleLogDataSource({this.maxCacheSize = 10000}) {
     // Add an initial log
     _addLog(
       LogEntryModel(
@@ -32,7 +30,7 @@ class SimpleLogDataSource {
         null,
       ),
     );
-    
+
     // Start polling for demonstration
     _startPolling();
   }
@@ -41,7 +39,7 @@ class SimpleLogDataSource {
     // Generate test logs every 2 seconds
     _pollTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
       _logCounter++;
-      
+
       // Add a test log
       _addLog(
         LogEntryModel(
@@ -58,26 +56,20 @@ class SimpleLogDataSource {
           null,
         ),
       );
-      
-      developer.log(
-        'Generated test log #$_logCounter', 
-        name: 'SimpleLogDataSource',
-      );
+
+      developer.log('Generated test log #$_logCounter', name: 'SimpleLogDataSource');
     });
   }
-  
+
   LogLevel _getRandomLogLevel() {
-    final levels = LogLevel.values;
+    const levels = LogLevel.values;
     return levels[_logCounter % levels.length];
   }
 
   void _addLog(LogEntryModel log) {
     _cachedLogs.add(log);
-    
-    developer.log(
-      'Adding log to cache: ${log.message} (Total: ${_cachedLogs.length})', 
-      name: 'SimpleLogDataSource',
-    );
+
+    developer.log('Adding log to cache: ${log.message} (Total: ${_cachedLogs.length})', name: 'SimpleLogDataSource');
 
     // Maintain cache size
     if (_cachedLogs.length > maxCacheSize) {

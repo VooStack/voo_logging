@@ -13,17 +13,7 @@ class LogFilter extends Equatable {
   final String? sessionId;
   final bool? hasError;
 
-  const LogFilter({
-    this.startTime,
-    this.endTime,
-    this.levels,
-    this.categories,
-    this.tags,
-    this.searchQuery,
-    this.userId,
-    this.sessionId,
-    this.hasError,
-  });
+  const LogFilter({this.startTime, this.endTime, this.levels, this.categories, this.tags, this.searchQuery, this.userId, this.sessionId, this.hasError});
 
   LogFilter copyWith({
     DateTime? startTime,
@@ -35,29 +25,18 @@ class LogFilter extends Equatable {
     String? userId,
     String? sessionId,
     bool? hasError,
-  }) =>
-      LogFilter(
-        startTime: startTime ?? this.startTime,
-        endTime: endTime ?? this.endTime,
-        levels: levels ?? this.levels,
-        categories: categories ?? this.categories,
-        tags: tags ?? this.tags,
-        searchQuery: searchQuery ?? this.searchQuery,
-        userId: userId ?? this.userId,
-        sessionId: sessionId ?? this.sessionId,
-        hasError: hasError ?? this.hasError,
-      );
+  }) => LogFilter(
+    startTime: startTime ?? this.startTime,
+    endTime: endTime ?? this.endTime,
+    levels: levels ?? this.levels,
+    categories: categories ?? this.categories,
+    tags: tags ?? this.tags,
+    searchQuery: searchQuery ?? this.searchQuery,
+    userId: userId ?? this.userId,
+    sessionId: sessionId ?? this.sessionId,
+    hasError: hasError ?? this.hasError,
+  );
 
   @override
-  List<Object?> get props => [
-        startTime,
-        endTime,
-        levels,
-        categories,
-        tags,
-        searchQuery,
-        userId,
-        sessionId,
-        hasError,
-      ];
+  List<Object?> get props => [startTime, endTime, levels, categories, tags, searchQuery, userId, sessionId, hasError];
 }

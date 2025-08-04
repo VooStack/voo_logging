@@ -12,37 +12,15 @@ class LogEntryHeader extends StatelessWidget {
   final bool showTag;
   final VoidCallback? onLevelTap;
 
-  const LogEntryHeader({
-    super.key,
-    required this.log,
-    this.showTimestamp = true,
-    this.showCategory = true,
-    this.showTag = true,
-    this.onLevelTap,
-  });
+  const LogEntryHeader({super.key, required this.log, this.showTimestamp = true, this.showCategory = true, this.showTag = true, this.onLevelTap});
 
   @override
   Widget build(BuildContext context) => Row(
-        children: [
-          LogLevelChip(
-            level: log.level,
-            onTap: onLevelTap,
-          ),
-          if (showTimestamp) ...[
-            const SizedBox(width: 8),
-            TimestampText(timestamp: log.timestamp),
-          ],
-          if (showCategory && log.category != null) ...[
-            const SizedBox(width: 8),
-            CategoryBadge(category: log.category!),
-          ],
-          if (showTag && log.tag != null) ...[
-            const SizedBox(width: 8),
-            CategoryBadge(
-              category: log.tag!,
-              color: Theme.of(context).colorScheme.secondary,
-            ),
-          ],
-        ],
-      );
+    children: [
+      LogLevelChip(level: log.level, onTap: onLevelTap),
+      if (showTimestamp) ...[const SizedBox(width: 8), TimestampText(timestamp: log.timestamp)],
+      if (showCategory && log.category != null) ...[const SizedBox(width: 8), CategoryBadge(category: log.category!)],
+      if (showTag && log.tag != null) ...[const SizedBox(width: 8), CategoryBadge(category: log.tag!, color: Theme.of(context).colorScheme.secondary)],
+    ],
+  );
 }

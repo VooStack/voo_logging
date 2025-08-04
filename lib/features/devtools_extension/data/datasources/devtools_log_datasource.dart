@@ -20,9 +20,7 @@ class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {
 
   StreamSubscription<vm.Event>? _loggingSubscription;
 
-  DevToolsLogDataSourceImpl({
-    this.maxCacheSize = 10000,
-  }) {
+  DevToolsLogDataSourceImpl({this.maxCacheSize = 10000}) {
     // Add an initial log immediately
     _addLog(
       LogEntryModel(
@@ -39,7 +37,7 @@ class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {
         null, // sessionId
       ),
     );
-    
+
     _listenToExtensionEvents();
   }
 
@@ -49,12 +47,12 @@ class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {
 
       // Wait for service manager
       developer.log('Waiting for serviceManager...', name: 'VooLoggerDevTools');
-      
+
       if (!serviceManager.connectedState.value.connected) {
         developer.log('No service connection, waiting...', name: 'VooLoggerDevTools');
         await serviceManager.onServiceAvailable;
       }
-      
+
       final service = serviceManager.service;
       if (service == null) {
         developer.log('ERROR: VM Service is null after waiting!', name: 'VooLoggerDevTools', level: 1000);
@@ -77,7 +75,7 @@ class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {
       }
 
       developer.log('VM Service available, setting up logging stream...', name: 'VooLoggerDevTools');
-      
+
       // Enable the logging stream
       try {
         await service.streamListen(vm.EventStreams.kLogging);
@@ -85,20 +83,17 @@ class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {
       } catch (e) {
         developer.log('Error enabling logging stream: $e', name: 'VooLoggerDevTools');
       }
-      
+
       // Listen to logging events
       _loggingSubscription = service.onLoggingEvent.listen((vm.Event event) {
         if (event.logRecord != null) {
           final record = event.logRecord!;
           final loggerName = record.loggerName?.valueAsString ?? '';
-          
+
           // Check if this is a VooLogger log
-          if (loggerName.contains('VooLogger') || 
-              loggerName.contains('voo_logger') ||
-              loggerName == 'AwesomeLogger') {
-            
+          if (loggerName.contains('VooLogger') || loggerName.contains('voo_logger') || loggerName == 'AwesomeLogger') {
             final message = record.message?.valueAsString ?? '';
-            
+
             // Try to parse structured log data from the message
             if (message.startsWith('{') && message.endsWith('}')) {
               try {
@@ -111,11 +106,11 @@ class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {
                 // Not JSON, treat as regular message
               }
             }
-            
+
             // Create log entry from regular logging
             final time = record.time;
             final level = record.level;
-            
+
             final logEntry = LogEntryModel(
               DateTime.now().millisecondsSinceEpoch.toString(),
               DateTime.fromMillisecondsSinceEpoch(time ?? DateTime.now().millisecondsSinceEpoch),
@@ -129,20 +124,14 @@ class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {
               null, // userId
               null, // sessionId
             );
-            
+
             _addLog(logEntry);
-            developer.log(
-              'Log captured: $message', 
-              name: 'VooLoggerDevTools',
-            );
+            developer.log('Log captured: $message', name: 'VooLoggerDevTools');
           }
         }
       });
 
-      developer.log(
-        'Extension event listener setup complete', 
-        name: 'VooLoggerDevTools',
-      );
+      developer.log('Extension event listener setup complete', name: 'VooLoggerDevTools');
 
       // Send initial connection log
       _addLog(
@@ -161,14 +150,10 @@ class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {
         ),
       );
     } catch (e, stack) {
-      developer.log(
-        'Error in _listenToExtensionEvents: $e\n$stack', 
-        name: 'VooLoggerDevTools',
-        level: 1000,
-      );
+      developer.log('Error in _listenToExtensionEvents: $e\n$stack', name: 'VooLoggerDevTools', level: 1000);
     }
   }
-  
+
   LogLevel _parseLogLevel(String levelName) {
     switch (levelName) {
       case 'verbose':
@@ -190,12 +175,8 @@ class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {
 
   void _addLog(LogEntryModel log) {
     _cachedLogs.add(log);
-    
-    developer.log(
-      'Added log to cache: ${log.message} (Total: ${_cachedLogs.length})', 
-      name: 'VooLoggerDevTools',
-      level: 800,
-    );
+
+    developer.log('Added log to cache: ${log.message} (Total: ${_cachedLogs.length})', name: 'VooLoggerDevTools', level: 800);
 
     // Maintain cache size
     if (_cachedLogs.length > maxCacheSize) {
@@ -219,7 +200,7 @@ class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {
   void _handleStructuredLog(Map<String, dynamic> data) {
     try {
       final entry = data['entry'] as Map<String, dynamic>;
-      
+
       final logEntry = LogEntryModel(
         entry['id'] as String,
         DateTime.parse(entry['timestamp'] as String),
@@ -233,13 +214,13 @@ class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {
         entry['userId'] as String?,
         entry['sessionId'] as String?,
       );
-      
+
       _addLog(logEntry);
     } catch (e) {
       developer.log('Error parsing structured log: $e', name: 'VooLoggerDevTools');
     }
   }
-  
+
   LogLevel _mapLogLevel(int level) {
     // Map dart:developer log levels to LogLevel
     if (level >= 1000) return LogLevel.error;
@@ -248,7 +229,7 @@ class DevToolsLogDataSourceImpl implements DevToolsLogDataSource {
     if (level >= 700) return LogLevel.debug;
     return LogLevel.verbose;
   }
-  
+
   void dispose() {
     _loggingSubscription?.cancel();
     _logController.close();

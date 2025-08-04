@@ -6,12 +6,7 @@ class CategoryBadge extends StatelessWidget {
   final Color? color;
   final TextStyle? textStyle;
 
-  const CategoryBadge({
-    super.key,
-    required this.category,
-    this.color,
-    this.textStyle,
-  });
+  const CategoryBadge({super.key, required this.category, this.color, this.textStyle});
 
   @override
   Widget build(BuildContext context) {
@@ -23,17 +18,11 @@ class CategoryBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: bgColor.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(
-          color: bgColor.withValues(alpha: 0.5),
-        ),
+        border: Border.all(color: bgColor.withValues(alpha: 0.5)),
       ),
       child: Text(
         category,
-        style: textStyle ??
-            theme.textTheme.labelSmall?.copyWith(
-              color: bgColor,
-              fontWeight: FontWeight.w500,
-            ),
+        style: textStyle ?? theme.textTheme.labelSmall?.copyWith(color: bgColor, fontWeight: FontWeight.w500),
       ),
     );
   }

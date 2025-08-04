@@ -32,10 +32,7 @@ class LogBloc extends Bloc<LogEvent, LogState> {
   }
 
   void _onStreamChanged(StreamChanged event, Emitter<LogState> emit) {
-    logStreamSubscription = event.stream.listen(
-      (log) => add(LogReceived(log)),
-      onError: (Object error) => emit(state.copyWith(error: error.toString())),
-    );
+    logStreamSubscription = event.stream.listen((log) => add(LogReceived(log)), onError: (Object error) => emit(state.copyWith(error: error.toString())));
   }
 
   Future<void> _onLoadLogs(LoadLogs event, Emitter<LogState> emit) async {
@@ -46,20 +43,9 @@ class LogBloc extends Bloc<LogEvent, LogState> {
 
       log('LoadLogs - Found ${cachedLogs.length} cached logs', name: 'LogBloc', level: 800);
 
-      emit(
-        state.copyWith(
-          logs: cachedLogs,
-          isLoading: false,
-          filteredLogs: _applyFilters(cachedLogs, state),
-        ),
-      );
+      emit(state.copyWith(logs: cachedLogs, isLoading: false, filteredLogs: _applyFilters(cachedLogs, state)));
     } catch (e) {
-      emit(
-        state.copyWith(
-          error: e.toString(),
-          isLoading: false,
-        ),
-      );
+      emit(state.copyWith(error: e.toString(), isLoading: false));
     }
   }
 
@@ -68,13 +54,7 @@ class LogBloc extends Bloc<LogEvent, LogState> {
       state.copyWith(
         selectedLevels: event.levels,
         selectedCategory: event.category,
-        filteredLogs: _applyFilters(
-          state.logs,
-          state.copyWith(
-            selectedLevels: event.levels,
-            selectedCategory: event.category,
-          ),
-        ),
+        filteredLogs: _applyFilters(state.logs, state.copyWith(selectedLevels: event.levels, selectedCategory: event.category)),
       ),
     );
   }
@@ -87,12 +67,7 @@ class LogBloc extends Bloc<LogEvent, LogState> {
 
     log('Total logs: ${updatedLogs.length}, Filtered: ${filtered.length}', name: 'LogBloc', level: 800);
 
-    emit(
-      state.copyWith(
-        logs: updatedLogs,
-        filteredLogs: filtered,
-      ),
-    );
+    emit(state.copyWith(logs: updatedLogs, filteredLogs: filtered));
   }
 
   void _onSelectLog(SelectLog event, Emitter<LogState> emit) {
@@ -116,10 +91,7 @@ class LogBloc extends Bloc<LogEvent, LogState> {
     emit(
       state.copyWith(
         searchQuery: event.query,
-        filteredLogs: _applyFilters(
-          state.logs,
-          state.copyWith(searchQuery: event.query),
-        ),
+        filteredLogs: _applyFilters(state.logs, state.copyWith(searchQuery: event.query)),
       ),
     );
   }

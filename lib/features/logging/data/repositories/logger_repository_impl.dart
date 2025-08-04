@@ -158,21 +158,12 @@ class LoggerRepositoryImpl extends LoggerRepository {
           'sessionId': entry.sessionId,
         },
       };
-      
+
       // Send as a structured log that the DevTools extension can parse
-      developer.log(
-        jsonEncode(structuredData),
-        name: 'VooLogger',
-        level: entry.level.priority,
-        time: entry.timestamp,
-      );
+      developer.log(jsonEncode(structuredData), name: 'VooLogger', level: entry.level.priority, time: entry.timestamp);
     } catch (e) {
       // Fallback to regular logging if structured logging fails
-      developer.log(
-        'Error sending structured log: $e', 
-        name: 'VooLogger',
-        level: 1000,
-      );
+      developer.log('Error sending structured log: $e', name: 'VooLogger', level: 1000);
     }
   }
 

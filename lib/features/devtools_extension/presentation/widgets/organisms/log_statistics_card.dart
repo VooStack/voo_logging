@@ -8,10 +8,7 @@ import 'package:voo_logging/features/logging/domain/entities/log_statistics.dart
 class LogStatisticsCard extends StatelessWidget {
   final LogStatistics statistics;
 
-  const LogStatisticsCard({
-    super.key,
-    required this.statistics,
-  });
+  const LogStatisticsCard({super.key, required this.statistics});
 
   @override
   Widget build(BuildContext context) {
@@ -24,14 +21,8 @@ class LogStatisticsCard extends StatelessWidget {
         _buildSummary(theme),
         const SizedBox(height: 16),
         _buildLevelBreakdown(theme),
-        if (statistics.categoryCounts.isNotEmpty) ...[
-          const SizedBox(height: 16),
-          _buildTopCategories(theme),
-        ],
-        if (statistics.tagCounts.isNotEmpty) ...[
-          const SizedBox(height: 16),
-          _buildTopTags(theme),
-        ],
+        if (statistics.categoryCounts.isNotEmpty) ...[const SizedBox(height: 16), _buildTopCategories(theme)],
+        if (statistics.tagCounts.isNotEmpty) ...[const SizedBox(height: 16), _buildTopTags(theme)],
       ],
     );
   }
@@ -44,67 +35,44 @@ class LogStatisticsCard extends StatelessWidget {
       children: [
         StatItem(label: 'Total Logs', value: statistics.totalLogs.toString()),
         if (duration != null) StatItem(label: 'Duration', value: _formatDuration(duration)),
-        if (statistics.oldestLog != null)
-          StatItem(
-            label: 'First Log',
-            value: _formatDateTime(statistics.oldestLog!),
-          ),
-        if (statistics.newestLog != null)
-          StatItem(
-            label: 'Last Log',
-            value: _formatDateTime(statistics.newestLog!),
-          ),
+        if (statistics.oldestLog != null) StatItem(label: 'First Log', value: _formatDateTime(statistics.oldestLog!)),
+        if (statistics.newestLog != null) StatItem(label: 'Last Log', value: _formatDateTime(statistics.newestLog!)),
       ],
     );
   }
 
   Widget _buildLevelBreakdown(ThemeData theme) => Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Log Levels',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              ...LogLevel.values.map((level) {
-                final count = statistics.levelCounts[level] ?? 0;
-                if (count == 0) return const SizedBox.shrink();
+    child: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Log Levels', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
+          ...LogLevel.values.map((level) {
+            final count = statistics.levelCounts[level] ?? 0;
+            if (count == 0) return const SizedBox.shrink();
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 12,
-                        height: 12,
-                        decoration: BoxDecoration(
-                          color: _getLevelColor(level),
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(level.displayName),
-                      ),
-                      Text(
-                        count.toString(),
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                children: [
+                  Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(color: _getLevelColor(level), shape: BoxShape.circle),
                   ),
-                );
-              }),
-            ],
-          ),
-        ),
-      );
+                  const SizedBox(width: 8),
+                  Expanded(child: Text(level.displayName)),
+                  Text(count.toString(), style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
+                ],
+              ),
+            );
+          }),
+        ],
+      ),
+    ),
+  );
 
   Widget _buildTopCategories(ThemeData theme) {
     final sortedCategories = statistics.categoryCounts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
@@ -115,16 +83,9 @@ class LogStatisticsCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Top Categories',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            Text('Top Categories', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
-            ...sortedCategories.take(5).map(
-                  (entry) => _buildStatRow(entry.key, entry.value.toString()),
-                ),
+            ...sortedCategories.take(5).map((entry) => _buildStatRow(entry.key, entry.value.toString())),
           ],
         ),
       ),
@@ -140,16 +101,9 @@ class LogStatisticsCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Top Tags',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            Text('Top Tags', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
-            ...sortedTags.take(5).map(
-                  (entry) => _buildStatRow(entry.key, entry.value.toString()),
-                ),
+            ...sortedTags.take(5).map((entry) => _buildStatRow(entry.key, entry.value.toString())),
           ],
         ),
       ),
@@ -157,18 +111,15 @@ class LogStatisticsCard extends StatelessWidget {
   }
 
   Widget _buildStatRow(String label, String value) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 2),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(label),
-            Text(
-              value,
-              style: const TextStyle(fontWeight: FontWeight.w500),
-            ),
-          ],
-        ),
-      );
+    padding: const EdgeInsets.symmetric(vertical: 2),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label),
+        Text(value, style: const TextStyle(fontWeight: FontWeight.w500)),
+      ],
+    ),
+  );
 
   Color _getLevelColor(LogLevel level) {
     switch (level) {
@@ -199,7 +150,8 @@ class LogStatisticsCard extends StatelessWidget {
     }
   }
 
-  String _formatDateTime(DateTime dateTime) => '${dateTime.month}/${dateTime.day} '
+  String _formatDateTime(DateTime dateTime) =>
+      '${dateTime.month}/${dateTime.day} '
       '${dateTime.hour.toString().padLeft(2, '0')}:'
       '${dateTime.minute.toString().padLeft(2, '0')}';
 }

@@ -8,14 +8,7 @@ class IconButtonAtom extends StatelessWidget {
   final Color? color;
   final double size;
 
-  const IconButtonAtom({
-    super.key,
-    required this.icon,
-    this.onPressed,
-    this.tooltip,
-    this.color,
-    this.size = 20,
-  });
+  const IconButtonAtom({super.key, required this.icon, this.onPressed, this.tooltip, this.color, this.size = 20});
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +19,7 @@ class IconButtonAtom extends StatelessWidget {
       onPressed: onPressed,
       tooltip: tooltip,
       color: color ?? theme.iconTheme.color,
-      constraints: BoxConstraints(
-        minWidth: size + 16,
-        minHeight: size + 16,
-      ),
+      constraints: BoxConstraints(minWidth: size + 16, minHeight: size + 16),
       padding: const EdgeInsets.all(8),
       splashRadius: size,
     );

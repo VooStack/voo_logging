@@ -18,11 +18,7 @@ class DevToolsLogRepositoryImpl implements DevToolsLogRepository {
   void clearLogs() => dataSource.clearCache();
 
   @override
-  List<LogEntryModel> filterLogs({
-    List<LogLevel>? levels,
-    String? searchQuery,
-    String? category,
-  }) {
+  List<LogEntryModel> filterLogs({List<LogLevel>? levels, String? searchQuery, String? category}) {
     var logs = getCachedLogs();
 
     if (levels != null && levels.isNotEmpty) {
@@ -35,10 +31,15 @@ class DevToolsLogRepositoryImpl implements DevToolsLogRepository {
 
     if (searchQuery != null && searchQuery.isNotEmpty) {
       final query = searchQuery.toLowerCase();
-      logs = logs.where((log) => log.message.toLowerCase().contains(query) ||
-              (log.category?.toLowerCase().contains(query) ?? false) ||
-              (log.tag?.toLowerCase().contains(query) ?? false) ||
-              (log.error?.toString().toLowerCase().contains(query) ?? false),).toList();
+      logs = logs
+          .where(
+            (log) =>
+                log.message.toLowerCase().contains(query) ||
+                (log.category?.toLowerCase().contains(query) ?? false) ||
+                (log.tag?.toLowerCase().contains(query) ?? false) ||
+                (log.error?.toString().toLowerCase().contains(query) ?? false),
+          )
+          .toList();
     }
 
     return logs;

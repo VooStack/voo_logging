@@ -8,14 +8,7 @@ class StatItem extends StatelessWidget {
   final TextStyle? labelStyle;
   final TextStyle? valueStyle;
 
-  const StatItem({
-    super.key,
-    required this.label,
-    required this.value,
-    this.leading,
-    this.labelStyle,
-    this.valueStyle,
-  });
+  const StatItem({super.key, required this.label, required this.value, this.leading, this.labelStyle, this.valueStyle});
 
   @override
   Widget build(BuildContext context) {
@@ -25,23 +18,9 @@ class StatItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
         children: [
-          if (leading != null) ...[
-            leading!,
-            const SizedBox(width: 8),
-          ],
-          Expanded(
-            child: Text(
-              label,
-              style: labelStyle ?? theme.textTheme.bodyMedium,
-            ),
-          ),
-          Text(
-            value,
-            style: valueStyle ??
-                theme.textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w500,
-                ),
-          ),
+          if (leading != null) ...[leading!, const SizedBox(width: 8)],
+          Expanded(child: Text(label, style: labelStyle ?? theme.textTheme.bodyMedium)),
+          Text(value, style: valueStyle ?? theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500)),
         ],
       ),
     );

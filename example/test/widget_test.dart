@@ -11,9 +11,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:voo_logging_example/main.dart';
 
 void main() {
-  testWidgets('Voo Logging Example app loads properly', (
-    WidgetTester tester,
-  ) async {
+  testWidgets('Voo Logging Example app loads properly', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 

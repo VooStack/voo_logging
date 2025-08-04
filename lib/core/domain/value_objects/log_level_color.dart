@@ -7,12 +7,7 @@ class LogLevelColor {
   final int blue;
   final double opacity;
 
-  const LogLevelColor({
-    required this.red,
-    required this.green,
-    required this.blue,
-    this.opacity = 1.0,
-  });
+  const LogLevelColor({required this.red, required this.green, required this.blue, this.opacity = 1.0});
 
   factory LogLevelColor.forLevel(LogLevel level) {
     switch (level) {
@@ -31,15 +26,11 @@ class LogLevelColor {
     }
   }
 
-  LogLevelColor withOpacity(double opacity) => LogLevelColor(
-        red: red,
-        green: green,
-        blue: blue,
-        opacity: opacity,
-      );
+  LogLevelColor withOpacity(double opacity) => LogLevelColor(red: red, green: green, blue: blue, opacity: opacity);
 
   /// Converts to a hex string
-  String toHex() => '#${red.toRadixString(16).padLeft(2, '0')}'
+  String toHex() =>
+      '#${red.toRadixString(16).padLeft(2, '0')}'
       '${green.toRadixString(16).padLeft(2, '0')}'
       '${blue.toRadixString(16).padLeft(2, '0')}';
 }

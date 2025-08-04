@@ -4,16 +4,13 @@ import 'package:voo_logging/voo_logging.dart';
 
 Future<void> main() async {
   // Initialize the logger
-  await VooLogger.initialize(
-    appName: 'DevTools Test App',
-    appVersion: '1.0.0',
-  );
+  await VooLogger.initialize(appName: 'DevTools Test App', appVersion: '1.0.0');
 
   // Create a periodic timer to generate logs
   int counter = 0;
   Timer.periodic(const Duration(seconds: 2), (timer) {
     counter++;
-    
+
     // Generate different types of logs
     switch (counter % 6) {
       case 0:
@@ -35,24 +32,20 @@ Future<void> main() async {
         VooLogger.fatal('Fatal log #$counter', category: 'Timer', tag: 'Test');
         break;
     }
-    
+
     // Also test with different categories
     if (counter % 3 == 0) {
       VooLogger.info('Network request to API', category: 'Network', tag: 'HTTP');
     }
-    
+
     if (counter % 4 == 0) {
       VooLogger.info('User clicked button', category: 'Analytics', tag: 'UserAction');
     }
-    
+
     if (counter % 5 == 0) {
-      VooLogger.performance(
-        'Database query', 
-        const Duration(milliseconds: 123),
-        metrics: {'rows': 100, 'cache_hit': true},
-      );
+      VooLogger.performance('Database query', const Duration(milliseconds: 123), metrics: {'rows': 100, 'cache_hit': true});
     }
-    
+
     // Stop after 20 iterations
     if (counter >= 20) {
       timer.cancel();
