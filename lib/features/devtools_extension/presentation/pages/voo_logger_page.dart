@@ -31,13 +31,8 @@ class _VooLoggerPageState extends State<VooLoggerPage> {
 
     return BlocConsumer<LogBloc, LogState>(
       listener: (context, state) {
-        // Auto-scroll when new log arrives and auto-scroll is enabled
         if (state.autoScroll && _scrollController.hasClients) {
-          _scrollController.animateTo(
-            0,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeOut,
-          );
+          _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
         }
       },
       builder: (context, state) => Scaffold(
@@ -49,9 +44,7 @@ class _VooLoggerPageState extends State<VooLoggerPage> {
             Expanded(
               child: Row(
                 children: [
-                  Expanded(
-                    child: _buildLogsList(state),
-                  ),
+                  Expanded(child: _buildLogsList(state)),
                   if (_showDetails && state.selectedLog != null)
                     SizedBox(
                       width: 400,
@@ -238,8 +231,6 @@ class _VooLoggerPageState extends State<VooLoggerPage> {
   }
 
   Future<void> _exportLogs(BuildContext context) async {
-    context.read<LogBloc>().add(const ExportLogs());
-
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

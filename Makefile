@@ -6,7 +6,7 @@ lint_fix:
 
 # DevTools Extension Commands
 prepare_devtools:
-	dart run devtools_extensions build_and_copy --source=. --dest=./devtools_extensions/devtools
+	dart run devtools_extensions build_and_copy --source=. --dest=extension/devtools
 
 # Clean all build artifacts
 clean_all:

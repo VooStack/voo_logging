@@ -16,7 +16,6 @@ export 'domain/entities/log_storage.dart';
 export 'domain/entities/logger_context.dart';
 export 'domain/entities/voo_logger.dart';
 // Domain - Repositories
-export 'domain/repositories/log_repository.dart';
 export 'domain/repositories/logger_repository.dart';
 // Domain - Use Cases
 export 'domain/usecases/log_usecases.dart';

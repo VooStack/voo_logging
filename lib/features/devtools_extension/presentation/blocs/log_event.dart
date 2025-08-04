@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:voo_logging/features/devtools_extension/domain/repositories/log_repository.dart';
 import 'package:voo_logging/features/logging/domain/entities/log_entry.dart';
 import 'package:voo_logging/features/logging/domain/entities/log_filter.dart';
 
@@ -40,15 +39,6 @@ class SelectLog extends LogEvent {
 }
 
 class ClearLogs extends LogEvent {}
-
-class ExportLogs extends LogEvent {
-  final ExportFormat format;
-
-  const ExportLogs({this.format = ExportFormat.json});
-
-  @override
-  List<Object?> get props => [format];
-}
 
 class ToggleAutoScroll extends LogEvent {}
 

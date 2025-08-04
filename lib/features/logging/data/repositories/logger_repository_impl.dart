@@ -23,12 +23,8 @@ class LoggerRepositoryImpl extends LoggerRepository {
   /// Public stream of log entries for real-time listeners
   @override
   Stream<LogEntry> get stream async* {
-    yield LogEntry(
-      id: 'initial',
-      timestamp: DateTime.now(),
-      message: 'Logger streaming started',
-      level: LogLevel.info,
-    );
+    yield LogEntry(id: 'initial', timestamp: DateTime.now(), message: 'Logger streaming started', level: LogLevel.info);
+
     yield* _logStreamController.stream;
   }
 
@@ -100,18 +96,9 @@ class LoggerRepositoryImpl extends LoggerRepository {
 
     _logToDevTools(entry);
 
-    // Add log entry to the stream for real-time listeners
-    if (!_logStreamController.isClosed) {
-      _logStreamController.add(entry);
-    }
+    _logStreamController.add(entry);
 
-    await _storage?.insertLog(entry).catchError((Object error) {
-      developer.log(
-        'Failed to store log: $error',
-        name: 'AwesomeLogger',
-        level: 1000,
-      );
-    });
+    await _storage?.insertLog(entry).catchError((Object error) => developer.log('Failed to store log: $error', name: 'AwesomeLogger', level: 1000));
 
     _sendToDevToolsExtension(entry);
   }
@@ -144,6 +131,8 @@ class LoggerRepositoryImpl extends LoggerRepository {
         error: entry.error,
         stackTrace: entry.stackTrace != null ? StackTrace.fromString(entry.stackTrace!) : null,
         sequenceNumber: entry.timestamp.millisecondsSinceEpoch,
+        time: entry.timestamp,
+        zone: Zone.current,
       );
       // ignore: empty_catches
     } catch (e) {}
