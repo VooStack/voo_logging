@@ -12,6 +12,9 @@ build_extension:
 copy_extension:
 	@echo "Copying extension to devtools directory..."
 	dart run devtools_extensions build_and_copy --source=extension/devtools --dest=extension/devtools/build
+	@echo "Copying to devtools_extensions directory..."
+	@mkdir -p devtools_extensions/voo_logging_0.0.2
+	@cp -r extension/devtools/build/web/* devtools_extensions/voo_logging_0.0.2/
 
 validate_extension:
 	@echo "Validating DevTools extension..."
@@ -39,6 +42,9 @@ prepare_devtools:
 	@echo ""
 	@echo "Step 4: Copying to devtools directory..."
 	@dart run devtools_extensions build_and_copy --source=extension/devtools --dest=extension/devtools/build || true
+	@echo "Copying to devtools_extensions directory..."
+	@mkdir -p devtools_extensions/voo_logging_0.0.2
+	@cp -r extension/devtools/build/web/* devtools_extensions/voo_logging_0.0.2/
 	@echo ""
 	@echo "Step 5: Validating extension..."
 	@dart run devtools_extensions validate --package=.
