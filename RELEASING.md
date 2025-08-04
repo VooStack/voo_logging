@@ -96,13 +96,18 @@ flutter pub publish --dry-run
 flutter pub publish
 ```
 
-## Setting up Pub Credentials
+## Setting up Automated Publishing
 
-To enable automated publishing, add pub.dev credentials as a GitHub secret:
+This package uses GitHub Actions OIDC (OpenID Connect) for secure publishing to pub.dev.
 
-1. Authenticate locally: `flutter pub login`
-2. Copy credentials: `cat ~/.pub-cache/credentials.json`
-3. Add as GitHub secret: `PUB_CREDENTIALS`
+### One-time Setup (Already Done)
+
+1. Go to https://pub.dev/packages/voo_logging/admin
+2. Navigate to "Automated publishing"
+3. Select "GitHub Actions"
+4. Enable publishing from this repository
+
+No credentials or secrets needed! GitHub Actions will authenticate automatically.
 
 ## Branch Strategy
 
@@ -142,11 +147,12 @@ git tag v1.0.0-beta.1
 3. Check pubspec.yaml format
 4. Ensure version is bumped
 
-### Credential Issues
+### Authentication Issues
 
-1. Verify `PUB_CREDENTIALS` secret is set correctly
-2. Check credential format (should be JSON)
-3. Ensure credentials are not expired
+1. Verify OIDC is enabled on pub.dev admin page
+2. Check that the repository matches exactly
+3. Ensure GitHub Actions has `id-token: write` permission
+4. The workflow must be triggered by a tag push or manual dispatch
 
 ### Tag Issues
 

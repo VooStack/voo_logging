@@ -2,11 +2,8 @@ name: Publish to pub.dev
 
 on:
   push:
-    branches:
-      - main
-      - release/*
     tags:
-      - 'v*'
+      - 'v[0-9]+.[0-9]+.[0-9]+*' # matches v1.0.0, v2.1.0, etc.
   workflow_dispatch:
     inputs:
       dry_run:
@@ -19,88 +16,71 @@ on:
           - 'false'
 
 jobs:
-  publish:
+  analyze-and-test:
     runs-on: ubuntu-latest
-    
-    # Only run on main branch, release branches, or tags
-    if: |
-      github.event_name == 'workflow_dispatch' ||
-      github.ref == 'refs/heads/main' ||
-      startsWith(github.ref, 'refs/heads/release/') ||
-      startsWith(github.ref, 'refs/tags/v')
-    
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: dart-lang/setup-dart@v1
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-      
+
       - name: Install dependencies
         run: flutter pub get
-      
+
       - name: Run tests
         run: flutter test
-        
+
       - name: Run analyzer
         run: flutter analyze
-      
+
       - name: Check publish readiness
         run: flutter pub publish --dry-run
-      
-      - name: Setup pub credentials
-        if: |
-          (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')) ||
-          (github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run == 'false')
-        run: |
-          mkdir -p ~/.pub-cache
-          echo '${{ secrets.PUB_CREDENTIALS }}' > ~/.pub-cache/credentials.json
-      
-      - name: Publish to pub.dev (dry run)
-        if: |
-          github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run == 'true'
-        run: flutter pub publish --dry-run
-        
-      - name: Publish to pub.dev
-        if: |
-          (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')) ||
-          (github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run == 'false')
-        run: flutter pub publish --force
 
-  publish-notification:
+  publish:
+    needs: analyze-and-test
+    if: github.event_name == 'push' || github.event.inputs.dry_run == 'false'
+    permissions:
+      id-token: write # Required for authentication using OIDC
+    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
+
+  create-release:
     needs: publish
     runs-on: ubuntu-latest
-    if: |
-      success() && 
-      ((github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')) ||
-       (github.event_name == 'workflow_dispatch' && github.event.inputs.dry_run == 'false'))
-    
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+
     steps:
+      - uses: actions/checkout@v4
+
       - name: Extract version
         id: extract_version
         run: |
-          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
-            VERSION=${GITHUB_REF#refs/tags/v}
-          else
-            VERSION="manual"
-          fi
+          VERSION=${GITHUB_REF#refs/tags/}
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-      
+
+      - name: Extract changelog entry
+        id: changelog
+        run: |
+          VERSION="${{ steps.extract_version.outputs.version }}"
+          VERSION_NUMBER=${VERSION#v}
+
+          # Extract the changelog entry for this version
+          CHANGELOG_ENTRY=$(awk -v ver="## $VERSION_NUMBER" '
+            $0 ~ ver {flag=1; next}
+            /^## / && flag {exit}
+            flag {print}
+          ' CHANGELOG.md)
+
+          # Write to file to preserve formatting
+          echo "$CHANGELOG_ENTRY" > changelog_entry.md
+          echo "changelog_file=changelog_entry.md" >> $GITHUB_OUTPUT
+
       - name: Create GitHub Release
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ steps.extract_version.outputs.version }}
-          body: |
-            ## Voo Logging ${{ steps.extract_version.outputs.version }}
-            
-            Published to [pub.dev](https://pub.dev/packages/voo_logging)
-            
-            ### What's Changed
-            See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for details.
+          name: ${{ steps.extract_version.outputs.version }}
+          body_path: ${{ steps.changelog.outputs.changelog_file }}
           draft: false
-          prerelease: false
+          prerelease: ${{ contains(steps.extract_version.outputs.version, '-') }}
