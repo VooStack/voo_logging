@@ -12,7 +12,7 @@ void main() {
     });
 
     test('should log messages at different levels', () async {
-      await VooLogger.initialize(minimumLevel: LogLevel.verbose, appName: 'Test App', appVersion: '1.0.0', userId: 'test_user');
+      await VooLogger.initialize(appName: 'Test App', appVersion: '1.0.0', userId: 'test_user');
 
       // Test logging at different levels
       expect(() async => VooLogger.verbose('Verbose message'), returnsNormally);
