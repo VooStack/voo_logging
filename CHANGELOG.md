@@ -1,3 +1,7 @@
+## 0.0.4
+
+* bumped dev tools extension version
+
 ## 0.0.3
 
 * Fixed bugs related to logging overflow in dev tools
