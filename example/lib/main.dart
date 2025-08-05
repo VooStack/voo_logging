@@ -326,7 +326,7 @@ class _LoggingExamplePageState extends State<LoggingExamplePage> {
       final category = categories[i % categories.length];
       final level = levels[i % levels.length];
 
-      VooLogger.log(
+      await VooLogger.log(
         'Generated log #${i + 1}: Sample ${level.name} message',
         level: level,
         category: category,

@@ -4,10 +4,7 @@ import 'package:flutter/foundation.dart';
 /// Helper class to handle session export across platforms
 class SessionExportHelper {
   /// Export session data as JSON
-  static Future<void> exportSession({
-    required Map<String, dynamic> exportData,
-    required String sessionId,
-  }) async {
+  static Future<void> exportSession({required Map<String, dynamic> exportData, required String sessionId}) async {
     final jsonString = const JsonEncoder.withIndent('  ').convert(exportData);
     final bytes = utf8.encode(jsonString);
     final fileName = 'session_${sessionId}_${DateTime.now().millisecondsSinceEpoch}.json';
@@ -25,11 +22,7 @@ class SessionExportHelper {
       final html = await _getHtmlLibrary();
       final blob = html.Blob([bytes]);
       final url = html.Url.createObjectUrlFromBlob(blob);
-      
-      final anchor = html.AnchorElement(href: url)
-        ..setAttribute('download', fileName)
-        ..click();
-      
+
       html.Url.revokeObjectUrl(url);
     }
   }

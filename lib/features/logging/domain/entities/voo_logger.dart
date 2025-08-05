@@ -1,7 +1,6 @@
 import 'package:voo_logging/features/logging/data/repositories/logger_repository_impl.dart';
 import 'package:voo_logging/features/logging/domain/entities/voo_logger_impl.dart';
 import 'package:voo_logging/features/logging/domain/entities/voo_logger_interface.dart';
-import 'package:voo_logging/features/logging/presentation/voo_logger_extension_registration.dart';
 import 'package:voo_logging/features/session_replay/data/repositories/session_recording_repository_impl.dart';
 import 'package:voo_logging/features/session_replay/domain/repositories/session_recording_repository.dart';
 import 'package:voo_logging/voo_logging.dart';
@@ -9,39 +8,35 @@ import 'package:voo_logging/voo_logging.dart';
 class VooLogger {
   bool _initialized = false;
   factory VooLogger() => instance;
-  
+
   // Internal logger implementation - can be overridden for testing
   static VooLoggerInterface? _loggerInstance;
-  
+
   // Default implementation
   static final VooLoggerImpl _defaultLogger = VooLoggerImpl();
-  
+
   // Get the current logger instance (either injected or default)
   static VooLoggerInterface get _logger => _loggerInstance ?? _defaultLogger;
-  
+
   // Public getter for accessing the logger (for SessionReplayTracker)
   static VooLoggerInterface get logger => _logger;
-  
+
   final LoggerRepository _repository = LoggerRepositoryImpl();
   final SessionRecordingRepository _sessionRecorder = SessionRecordingRepositoryImpl();
-  
+
   Stream<LogEntry> get stream => _logger.stream;
   LoggerRepository get repository => _logger.repository;
   SessionRecordingRepository get sessionRecorder => _logger.sessionRecorder;
-  
+
   VooLogger._internal();
 
   static final VooLogger instance = VooLogger._internal();
-  
+
   /// Set a custom logger implementation (useful for testing)
-  static void setLogger(VooLoggerInterface logger) {
-    _loggerInstance = logger;
-  }
-  
+  static Future<void> setLogger(VooLoggerInterface logger) async => _loggerInstance = logger;
+
   /// Reset to default logger implementation
-  static void resetLogger() {
-    _loggerInstance = null;
-  }
+  static Future<void> resetLogger() async => _loggerInstance = null;
 
   static Future<void> initialize({String? appName, String? appVersion, String? userId, LogLevel minimumLevel = LogLevel.verbose}) async {
     await _logger.initialize(appName: appName, appVersion: appVersion, userId: userId, minimumLevel: minimumLevel);
@@ -151,15 +146,11 @@ class VooLogger {
     if (!instance._initialized) {
       throw StateError('VooLogger must be initialized before use');
     }
-    
+
     final sessionId = instance._repository.sessionId;
     final userId = instance._repository.userId ?? 'anonymous';
-    
-    await instance._sessionRecorder.startRecording(
-      sessionId: sessionId,
-      userId: userId,
-      metadata: metadata,
-    );
+
+    await instance._sessionRecorder.startRecording(sessionId: sessionId, userId: userId, metadata: metadata);
   }
 
   static Future<void> stopSessionRecording() async {
