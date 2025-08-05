@@ -47,6 +47,11 @@ class _VooLoggerPageState extends State<VooLoggerPage> {
             }
           });
         }
+        
+        // Close details panel if selected log is cleared
+        if (_showDetails && state.selectedLog == null) {
+          setState(() => _showDetails = false);
+        }
       },
       builder: (context, state) => Scaffold(
         backgroundColor: theme.colorScheme.surface,
@@ -55,15 +60,18 @@ class _VooLoggerPageState extends State<VooLoggerPage> {
             _buildToolbar(context, theme, state),
             const LogFilterBar(),
             Expanded(
-              child: Row(
-                children: [
-                  Expanded(child: _buildLogsList(state)),
-                  if (_showDetails && state.selectedLog != null)
-                    SizedBox(
-                      width: 400,
-                      child: LogDetailsPanel(log: state.selectedLog!, onClose: () => setState(() => _showDetails = false)),
-                    ),
-                ],
+              child: Container(
+                color: theme.colorScheme.surface,
+                child: Row(
+                  children: [
+                    Expanded(child: _buildLogsList(state)),
+                    if (_showDetails && state.selectedLog != null)
+                      SizedBox(
+                        width: 400,
+                        child: LogDetailsPanel(log: state.selectedLog!, onClose: () => setState(() => _showDetails = false)),
+                      ),
+                  ],
+                ),
               ),
             ),
           ],

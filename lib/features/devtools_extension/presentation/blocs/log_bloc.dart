@@ -101,6 +101,7 @@ class LogBloc extends Bloc<LogEvent, LogState> {
       logs: [],
       filteredLogs: [],
       statistics: LogStatisticsExtensions.fromLogs([]),
+      clearSelectedLog: true,
     ));
   }
 

@@ -1,3 +1,7 @@
+## 0.0.3
+
+* Fixed bugs related to logging overflow in dev tools
+
 ## 0.0.2
 
 * Add Voo Logger DevTools extension with advanced logging capabilities

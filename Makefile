@@ -13,3 +13,7 @@ clean_all:
 	flutter clean
 	cd example && flutter clean
 	rm -rf devtools_extensions/
+
+publish_package:
+	dart pub publish --dry-run
+	dart pub publish
