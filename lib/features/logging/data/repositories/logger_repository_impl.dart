@@ -28,6 +28,12 @@ class LoggerRepositoryImpl extends LoggerRepository {
   }
 
   @override
+  String? get userId => _currentUserId;
+
+  @override
+  String get sessionId => _currentSessionId ?? '';
+
+  @override
   Future<void> initialize({
     LogLevel minimumLevel = LogLevel.debug,
     String? userId,

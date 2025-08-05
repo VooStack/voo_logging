@@ -1,13 +1,19 @@
 import 'package:voo_logging/features/logging/data/repositories/logger_repository_impl.dart';
 import 'package:voo_logging/features/logging/presentation/voo_logger_extension_registration.dart';
+import 'package:voo_logging/features/session_replay/data/repositories/session_recording_repository_impl.dart';
+import 'package:voo_logging/features/session_replay/domain/repositories/session_recording_repository.dart';
 import 'package:voo_logging/voo_logging.dart';
 
 class VooLogger {
   bool _initialized = false;
   factory VooLogger() => instance;
   final LoggerRepository _repository = LoggerRepositoryImpl();
+  final SessionRecordingRepository _sessionRecorder = SessionRecordingRepositoryImpl();
+  
   Stream<LogEntry> get stream => _repository.stream;
   LoggerRepository get repository => _repository;
+  SessionRecordingRepository get sessionRecorder => _sessionRecorder;
+  
   VooLogger._internal();
 
   static final VooLogger instance = VooLogger._internal();
@@ -141,4 +147,45 @@ class VooLogger {
     }
     instance._repository.startNewSession();
   }
+
+  // Session Recording Methods
+  static Future<void> startSessionRecording({Map<String, dynamic>? metadata}) async {
+    if (!instance._initialized) {
+      throw StateError('VooLogger must be initialized before use');
+    }
+    
+    final sessionId = instance._repository.sessionId;
+    final userId = instance._repository.userId ?? 'anonymous';
+    
+    await instance._sessionRecorder.startRecording(
+      sessionId: sessionId,
+      userId: userId,
+      metadata: metadata,
+    );
+  }
+
+  static Future<void> stopSessionRecording() async {
+    if (!instance._initialized) {
+      throw StateError('VooLogger must be initialized before use');
+    }
+    await instance._sessionRecorder.stopRecording();
+  }
+
+  static Future<void> pauseSessionRecording() async {
+    if (!instance._initialized) {
+      throw StateError('VooLogger must be initialized before use');
+    }
+    await instance._sessionRecorder.pauseRecording();
+  }
+
+  static Future<void> resumeSessionRecording() async {
+    if (!instance._initialized) {
+      throw StateError('VooLogger must be initialized before use');
+    }
+    await instance._sessionRecorder.resumeRecording();
+  }
+
+  static bool get isRecordingSession => instance._sessionRecorder.isRecording;
+
+  static Stream<dynamic> get sessionRecordingStream => instance._sessionRecorder.recordingStream;
 }
