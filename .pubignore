@@ -8,7 +8,6 @@
 mason-lock.json
 
 # Build artifacts
-build/
 .dart_tool/
 
 # OS files
