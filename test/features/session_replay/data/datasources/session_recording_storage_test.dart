@@ -1,3 +1,4 @@
+import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_memory.dart';
 import 'package:test/test.dart';
 import 'package:voo_logging/core/domain/enums/log_level.dart';
@@ -8,29 +9,31 @@ import 'package:voo_logging/features/session_replay/domain/entities/session_reco
 void main() {
   group('SessionRecordingStorage', () {
     late SessionRecordingStorage storage;
+    late Database testDb;
 
-    setUp(() {
+    setUp(() async {
+      // Create unique database for each test
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      testDb = await databaseFactoryMemory.openDatabase('test_storage_$timestamp.db');
+      SessionRecordingStorage.setDatabaseForTesting(testDb);
       storage = SessionRecordingStorage();
+    });
+
+    tearDown(() async {
+      await testDb.close();
+      SessionRecordingStorage.setDatabaseForTesting(null);
     });
 
     group('Session Recording CRUD Operations', () {
       test('should save and retrieve a session recording', () async {
-        // Use in-memory database for testing
-        final db = await databaseFactoryMemory.openDatabase('test.db');
-        
         // Create test session
         final session = _createTestSession();
-        
-        // Create storage with test database
-        final testStorage = SessionRecordingStorage();
-        // Override the database instance for testing
-        SessionRecordingStorage.setDatabaseForTesting(db);
 
         // Save session
-        await testStorage.saveSession(session);
+        await storage.saveSession(session);
 
         // Retrieve session
-        final retrievedSession = await testStorage.getSession(session.id);
+        final retrievedSession = await storage.getSession(session.id);
 
         expect(retrievedSession, isNotNull);
         expect(retrievedSession!.id, equals(session.id));
@@ -38,75 +41,51 @@ void main() {
         expect(retrievedSession.userId, equals(session.userId));
         expect(retrievedSession.status, equals(session.status));
         expect(retrievedSession.events.length, equals(session.events.length));
-
-        await db.close();
       });
 
       test('should return null for non-existent session', () async {
-        final db = await databaseFactoryMemory.openDatabase('test.db');
-        final testStorage = SessionRecordingStorage();
-        SessionRecordingStorage.setDatabaseForTesting(db);
-
-        final result = await testStorage.getSession('non-existent-id');
+        final result = await storage.getSession('non-existent-id');
 
         expect(result, isNull);
-
-        await db.close();
       });
 
       test('should delete a session successfully', () async {
-        final db = await databaseFactoryMemory.openDatabase('test.db');
-        final testStorage = SessionRecordingStorage();
-        SessionRecordingStorage.setDatabaseForTesting(db);
-
         final session = _createTestSession();
-        await testStorage.saveSession(session);
+        await storage.saveSession(session);
 
         // Verify session exists
-        var retrievedSession = await testStorage.getSession(session.id);
+        var retrievedSession = await storage.getSession(session.id);
         expect(retrievedSession, isNotNull);
 
         // Delete session
-        await testStorage.deleteSession(session.id);
+        await storage.deleteSession(session.id);
 
         // Verify session is deleted
-        retrievedSession = await testStorage.getSession(session.id);
+        retrievedSession = await storage.getSession(session.id);
         expect(retrievedSession, isNull);
-
-        await db.close();
       });
 
       test('should query sessions with filters', () async {
-        final db = await databaseFactoryMemory.openDatabase('test.db');
-        final testStorage = SessionRecordingStorage();
-        SessionRecordingStorage.setDatabaseForTesting(db);
-
         // Create multiple test sessions
         final session1 = _createTestSession(id: 'session1', userId: 'user1');
         final session2 = _createTestSession(id: 'session2', userId: 'user2');
         final session3 = _createTestSession(id: 'session3', userId: 'user1');
 
-        await testStorage.saveSession(session1);
-        await testStorage.saveSession(session2);
-        await testStorage.saveSession(session3);
+        await storage.saveSession(session1);
+        await storage.saveSession(session2);
+        await storage.saveSession(session3);
 
         // Query by user ID
-        final userSessions = await testStorage.querySessions(userId: 'user1');
+        final userSessions = await storage.querySessions(userId: 'user1');
         expect(userSessions.length, equals(2));
         expect(userSessions.map((s) => s.id), containsAll(['session1', 'session3']));
 
         // Query with limit
-        final limitedSessions = await testStorage.querySessions(limit: 2);
+        final limitedSessions = await storage.querySessions(limit: 2);
         expect(limitedSessions.length, equals(2));
-
-        await db.close();
       });
 
       test('should delete old sessions', () async {
-        final db = await databaseFactoryMemory.openDatabase('test.db');
-        final testStorage = SessionRecordingStorage();
-        SessionRecordingStorage.setDatabaseForTesting(db);
-
         // Create sessions with different ages
         final oldSession = _createTestSession(
           id: 'old',
@@ -117,33 +96,27 @@ void main() {
           startTime: DateTime.now().subtract(Duration(hours: 1)),
         );
 
-        await testStorage.saveSession(oldSession);
-        await testStorage.saveSession(recentSession);
+        await storage.saveSession(oldSession);
+        await storage.saveSession(recentSession);
 
         // Delete sessions older than 7 days
-        await testStorage.deleteOldSessions(Duration(days: 7));
+        await storage.deleteOldSessions(Duration(days: 7));
 
         // Verify old session is deleted, recent session remains
-        final oldRetrieved = await testStorage.getSession('old');
-        final recentRetrieved = await testStorage.getSession('recent');
+        final oldRetrieved = await storage.getSession('old');
+        final recentRetrieved = await storage.getSession('recent');
 
         expect(oldRetrieved, isNull);
         expect(recentRetrieved, isNotNull);
-
-        await db.close();
       });
     });
 
     group('Event Compression and Parsing', () {
       test('should compress and decompress events correctly', () async {
-        final db = await databaseFactoryMemory.openDatabase('test.db');
-        final testStorage = SessionRecordingStorage();
-        SessionRecordingStorage.setDatabaseForTesting(db);
-
         final session = _createTestSessionWithEvents();
-        await testStorage.saveSession(session);
+        await storage.saveSession(session);
 
-        final retrievedSession = await testStorage.getSession(session.id);
+        final retrievedSession = await storage.getSession(session.id);
 
         expect(retrievedSession, isNotNull);
         expect(retrievedSession!.events.length, equals(session.events.length));
@@ -160,15 +133,9 @@ void main() {
             .first;
         expect(userActionEvent.action, equals('button_tap'));
         expect(userActionEvent.screen, equals('home'));
-
-        await db.close();
       });
 
       test('should handle different event types correctly', () async {
-        final db = await databaseFactoryMemory.openDatabase('test.db');
-        final testStorage = SessionRecordingStorage();
-        SessionRecordingStorage.setDatabaseForTesting(db);
-
         final events = [
           LogEvent(
             timestamp: DateTime.now(),
@@ -216,8 +183,8 @@ void main() {
           sizeInBytes: 0,
         );
 
-        await testStorage.saveSession(session);
-        final retrieved = await testStorage.getSession(session.id);
+        await storage.saveSession(session);
+        final retrieved = await storage.getSession(session.id);
 
         expect(retrieved, isNotNull);
         expect(retrieved!.events.length, equals(5));
@@ -228,21 +195,15 @@ void main() {
         expect(retrieved.events.whereType<NetworkEvent>().length, equals(1));
         expect(retrieved.events.whereType<ScreenNavigationEvent>().length, equals(1));
         expect(retrieved.events.whereType<AppStateEvent>().length, equals(1));
-
-        await db.close();
       });
     });
 
     group('Export and Import', () {
       test('should export session correctly', () async {
-        final db = await databaseFactoryMemory.openDatabase('test.db');
-        final testStorage = SessionRecordingStorage();
-        SessionRecordingStorage.setDatabaseForTesting(db);
-
         final session = _createTestSessionWithEvents();
-        await testStorage.saveSession(session);
+        await storage.saveSession(session);
 
-        final exportData = await testStorage.exportSession(session.id);
+        final exportData = await storage.exportSession(session.id);
 
         expect(exportData['version'], equals(1));
         expect(exportData['exportDate'], isNotNull);
@@ -251,15 +212,9 @@ void main() {
         final sessionData = exportData['session'] as Map<String, dynamic>;
         expect(sessionData['id'], equals(session.id));
         expect(sessionData['events'], isA<List>());
-
-        await db.close();
       });
 
       test('should import session correctly', () async {
-        final db = await databaseFactoryMemory.openDatabase('test.db');
-        final testStorage = SessionRecordingStorage();
-        SessionRecordingStorage.setDatabaseForTesting(db);
-
         final originalSession = _createTestSessionWithEvents();
         final exportData = {
           'version': 1,
@@ -277,50 +232,36 @@ void main() {
           },
         };
 
-        final importedSession = await testStorage.importSession(exportData);
+        final importedSession = await storage.importSession(exportData);
 
         expect(importedSession.id, equals(originalSession.id));
         expect(importedSession.sessionId, equals(originalSession.sessionId));
         expect(importedSession.events.length, equals(originalSession.events.length));
 
         // Verify session was saved
-        final retrievedSession = await testStorage.getSession(importedSession.id);
+        final retrievedSession = await storage.getSession(importedSession.id);
         expect(retrievedSession, isNotNull);
-
-        await db.close();
       });
 
       test('should throw exception when exporting non-existent session', () async {
-        final db = await databaseFactoryMemory.openDatabase('test.db');
-        final testStorage = SessionRecordingStorage();
-        SessionRecordingStorage.setDatabaseForTesting(db);
-
         expect(
-          () => testStorage.exportSession('non-existent'),
+          () => storage.exportSession('non-existent'),
           throwsException,
         );
-
-        await db.close();
       });
     });
 
     group('Storage Management', () {
       test('should calculate total storage size', () async {
-        final db = await databaseFactoryMemory.openDatabase('test.db');
-        final testStorage = SessionRecordingStorage();
-        SessionRecordingStorage.setDatabaseForTesting(db);
-
         final session1 = _createTestSession(sizeInBytes: 1024);
         final session2 = _createTestSession(id: 'session2', sizeInBytes: 2048);
 
-        await testStorage.saveSession(session1);
-        await testStorage.saveSession(session2);
+        await storage.saveSession(session1);
+        await storage.saveSession(session2);
 
-        final totalSize = await testStorage.getTotalStorageSize();
+        final totalSize = await storage.getTotalStorageSize();
 
         expect(totalSize, equals(3072));
-
-        await db.close();
       });
     });
   });

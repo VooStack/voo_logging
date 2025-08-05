@@ -12,8 +12,9 @@ void main() {
     late SessionRecordingStorage storage;
 
     setUp(() async {
-      // Use in-memory database for testing
-      final db = await databaseFactoryMemory.openDatabase('test_repo.db');
+      // Use a unique database for each test to ensure isolation
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final db = await databaseFactoryMemory.openDatabase('test_repo_$timestamp.db');
       SessionRecordingStorage.setDatabaseForTesting(db);
       
       storage = SessionRecordingStorage();

@@ -3,19 +3,14 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i7;
+import 'dart:async' as _i5;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:sembast/sembast.dart' as _i2;
-import 'package:voo_logging/features/logging/domain/entities/log_entry.dart'
-    as _i8;
 import 'package:voo_logging/features/session_replay/data/datasources/session_recording_storage.dart'
-    as _i6;
+    as _i4;
 import 'package:voo_logging/features/session_replay/domain/entities/session_recording.dart'
     as _i3;
-import 'package:voo_logging/features/session_replay/domain/repositories/session_recording_repository.dart'
-    as _i5;
-import 'package:voo_logging/voo_logging.dart' as _i4;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -42,48 +37,36 @@ class _FakeSessionRecording_1 extends _i1.SmartFake
     : super(parent, parentInvocation);
 }
 
-class _FakeLoggerRepository_2 extends _i1.SmartFake
-    implements _i4.LoggerRepository {
-  _FakeLoggerRepository_2(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
-class _FakeSessionRecordingRepository_3 extends _i1.SmartFake
-    implements _i5.SessionRecordingRepository {
-  _FakeSessionRecordingRepository_3(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
 /// A class which mocks [SessionRecordingStorage].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockSessionRecordingStorage extends _i1.Mock
-    implements _i6.SessionRecordingStorage {
+    implements _i4.SessionRecordingStorage {
   MockSessionRecordingStorage() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i7.Future<_i2.Database> get database =>
+  _i5.Future<_i2.Database> get database =>
       (super.noSuchMethod(
             Invocation.getter(#database),
-            returnValue: _i7.Future<_i2.Database>.value(
+            returnValue: _i5.Future<_i2.Database>.value(
               _FakeDatabase_0(this, Invocation.getter(#database)),
             ),
           )
-          as _i7.Future<_i2.Database>);
+          as _i5.Future<_i2.Database>);
 
   @override
-  _i7.Future<void> saveSession(_i3.SessionRecording? session) =>
+  _i5.Future<void> saveSession(_i3.SessionRecording? session) =>
       (super.noSuchMethod(
             Invocation.method(#saveSession, [session]),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i7.Future<List<_i3.SessionRecording>> querySessions({
+  _i5.Future<List<_i3.SessionRecording>> querySessions({
     String? userId,
     DateTime? startDate,
     DateTime? endDate,
@@ -96,105 +79,66 @@ class MockSessionRecordingStorage extends _i1.Mock
               #endDate: endDate,
               #limit: limit,
             }),
-            returnValue: _i7.Future<List<_i3.SessionRecording>>.value(
+            returnValue: _i5.Future<List<_i3.SessionRecording>>.value(
               <_i3.SessionRecording>[],
             ),
           )
-          as _i7.Future<List<_i3.SessionRecording>>);
+          as _i5.Future<List<_i3.SessionRecording>>);
 
   @override
-  _i7.Future<_i3.SessionRecording?> getSession(String? id) =>
+  _i5.Future<_i3.SessionRecording?> getSession(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#getSession, [id]),
-            returnValue: _i7.Future<_i3.SessionRecording?>.value(),
+            returnValue: _i5.Future<_i3.SessionRecording?>.value(),
           )
-          as _i7.Future<_i3.SessionRecording?>);
+          as _i5.Future<_i3.SessionRecording?>);
 
   @override
-  _i7.Future<void> deleteSession(String? id) =>
+  _i5.Future<void> deleteSession(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteSession, [id]),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i7.Future<void> deleteOldSessions(Duration? age) =>
+  _i5.Future<void> deleteOldSessions(Duration? age) =>
       (super.noSuchMethod(
             Invocation.method(#deleteOldSessions, [age]),
-            returnValue: _i7.Future<void>.value(),
-            returnValueForMissingStub: _i7.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i7.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i7.Future<int> getTotalStorageSize() =>
+  _i5.Future<int> getTotalStorageSize() =>
       (super.noSuchMethod(
             Invocation.method(#getTotalStorageSize, []),
-            returnValue: _i7.Future<int>.value(0),
+            returnValue: _i5.Future<int>.value(0),
           )
-          as _i7.Future<int>);
+          as _i5.Future<int>);
 
   @override
-  _i7.Future<Map<String, dynamic>> exportSession(String? id) =>
+  _i5.Future<Map<String, dynamic>> exportSession(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#exportSession, [id]),
-            returnValue: _i7.Future<Map<String, dynamic>>.value(
+            returnValue: _i5.Future<Map<String, dynamic>>.value(
               <String, dynamic>{},
             ),
           )
-          as _i7.Future<Map<String, dynamic>>);
+          as _i5.Future<Map<String, dynamic>>);
 
   @override
-  _i7.Future<_i3.SessionRecording> importSession(Map<String, dynamic>? data) =>
+  _i5.Future<_i3.SessionRecording> importSession(Map<String, dynamic>? data) =>
       (super.noSuchMethod(
             Invocation.method(#importSession, [data]),
-            returnValue: _i7.Future<_i3.SessionRecording>.value(
+            returnValue: _i5.Future<_i3.SessionRecording>.value(
               _FakeSessionRecording_1(
                 this,
                 Invocation.method(#importSession, [data]),
               ),
             ),
           )
-          as _i7.Future<_i3.SessionRecording>);
-}
-
-/// A class which mocks [VooLogger].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockVooLogger extends _i1.Mock implements _i4.VooLogger {
-  MockVooLogger() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i7.Stream<_i8.LogEntry> get stream =>
-      (super.noSuchMethod(
-            Invocation.getter(#stream),
-            returnValue: _i7.Stream<_i8.LogEntry>.empty(),
-          )
-          as _i7.Stream<_i8.LogEntry>);
-
-  @override
-  _i4.LoggerRepository get repository =>
-      (super.noSuchMethod(
-            Invocation.getter(#repository),
-            returnValue: _FakeLoggerRepository_2(
-              this,
-              Invocation.getter(#repository),
-            ),
-          )
-          as _i4.LoggerRepository);
-
-  @override
-  _i5.SessionRecordingRepository get sessionRecorder =>
-      (super.noSuchMethod(
-            Invocation.getter(#sessionRecorder),
-            returnValue: _FakeSessionRecordingRepository_3(
-              this,
-              Invocation.getter(#sessionRecorder),
-            ),
-          )
-          as _i5.SessionRecordingRepository);
+          as _i5.Future<_i3.SessionRecording>);
 }

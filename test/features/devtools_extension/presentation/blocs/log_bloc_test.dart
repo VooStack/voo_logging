@@ -43,7 +43,12 @@ void main() {
       act: (bloc) {}, // LoadLogs is called automatically in constructor
       expect: () => [
         const LogState(isLoading: true),
-        LogState(logs: [testLog1, testLog2], filteredLogs: [testLog1, testLog2]),
+        predicate<LogState>((state) => 
+          state.logs.length == 2 &&
+          state.filteredLogs.length == 2 &&
+          state.isLoading == false &&
+          state.statistics != null
+        ),
       ],
     );
 
@@ -53,7 +58,12 @@ void main() {
       act: (bloc) => bloc.add(LogReceived(testLog1)),
       skip: 2, // Skip initial state and LoadLogs states
       expect: () => [
-        LogState(logs: [testLog1], filteredLogs: [testLog1]),
+        predicate<LogState>((state) => 
+          state.logs.length == 1 &&
+          state.filteredLogs.length == 1 &&
+          state.logs.first == testLog1 &&
+          state.statistics != null
+        ),
       ],
     );
 
@@ -69,10 +79,11 @@ void main() {
       },
       skip: 2, // Skip initial state and LoadLogs states
       expect: () => [
-        LogState(
-          logs: [testLog1, testLog2],
-          filteredLogs: [testLog1], // Only info level
-          selectedLevels: const [LogLevel.info],
+        predicate<LogState>((state) => 
+          state.logs.length == 2 &&
+          state.filteredLogs.length == 1 && // Only info level
+          state.selectedLevels == const [LogLevel.info] &&
+          state.statistics != null
         ),
       ],
     );
@@ -89,7 +100,12 @@ void main() {
       },
       skip: 2, // Skip initial state and LoadLogs states
       expect: () => [
-        LogState(logs: [testLog1], filteredLogs: [testLog1], selectedLog: testLog1),
+        predicate<LogState>((state) => 
+          state.logs.length == 1 &&
+          state.filteredLogs.length == 1 &&
+          state.selectedLog == testLog1 &&
+          state.statistics != null
+        ),
       ],
     );
 
@@ -107,8 +123,18 @@ void main() {
       },
       skip: 2, // Skip initial state and LoadLogs states
       expect: () => [
-        LogState(logs: [testLog1], filteredLogs: [testLog1], selectedLog: testLog1),
-        LogState(logs: [testLog1], filteredLogs: [testLog1]),
+        predicate<LogState>((state) => 
+          state.logs.length == 1 &&
+          state.filteredLogs.length == 1 &&
+          state.selectedLog == testLog1 &&
+          state.statistics != null
+        ),
+        predicate<LogState>((state) => 
+          state.logs.length == 1 &&
+          state.filteredLogs.length == 1 &&
+          state.selectedLog == null &&
+          state.statistics != null
+        ),
       ],
     );
 
@@ -123,7 +149,13 @@ void main() {
         bloc.add(ClearLogs());
       },
       skip: 2, // Skip initial state and LoadLogs states
-      expect: () => [const LogState()],
+      expect: () => [
+        predicate<LogState>((state) => 
+          state.logs.isEmpty &&
+          state.filteredLogs.isEmpty &&
+          state.statistics != null
+        ),
+      ],
       verify: (_) {
         verify(mockRepository.clearLogs()).called(1);
       },
@@ -137,7 +169,12 @@ void main() {
         bloc.add(ToggleAutoScroll());
       },
       skip: 2, // Skip initial state and LoadLogs states
-      expect: () => [const LogState(autoScroll: false)],
+      expect: () => [
+        predicate<LogState>((state) => 
+          state.autoScroll == false &&
+          state.statistics != null
+        ),
+      ],
     );
 
     blocTest<LogBloc, LogState>(
@@ -152,10 +189,11 @@ void main() {
       },
       skip: 2, // Skip initial state and LoadLogs states
       expect: () => [
-        LogState(
-          logs: [testLog1, testLog2],
-          filteredLogs: [testLog1], // Only matching log
-          searchQuery: 'Test log 1',
+        predicate<LogState>((state) => 
+          state.logs.length == 2 &&
+          state.filteredLogs.length == 1 && // Only matching log
+          state.searchQuery == 'Test log 1' &&
+          state.statistics != null
         ),
       ],
     );

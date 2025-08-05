@@ -13,8 +13,9 @@ void main() {
     late SessionRecordingStorage storage;
 
     setUp(() async {
-      // Use in-memory database for testing
-      final db = await databaseFactoryMemory.openDatabase('test_integration.db');
+      // Use a unique database for each test to ensure isolation
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final db = await databaseFactoryMemory.openDatabase('test_integration_$timestamp.db');
       storage = SessionRecordingStorage();
       SessionRecordingStorage.setDatabaseForTesting(db);
       
@@ -23,6 +24,7 @@ void main() {
 
     tearDown(() {
       repository.dispose();
+      SessionRecordingStorage.setDatabaseForTesting(null);
     });
 
     test('should complete full session recording lifecycle', () async {

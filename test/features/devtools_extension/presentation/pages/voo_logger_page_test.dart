@@ -20,6 +20,8 @@ void main() {
     mockLogBloc = MockLogBloc();
     when(mockLogBloc.state).thenReturn(const LogState());
     when(mockLogBloc.stream).thenAnswer((_) => const Stream.empty());
+    // Stub the add method to accept any event
+    when(mockLogBloc.add(any)).thenReturn(null);
   });
 
   Widget createWidgetUnderTest() => MaterialApp(
@@ -74,9 +76,15 @@ void main() {
       when(mockLogBloc.state).thenReturn(LogState(filteredLogs: [testLog]));
 
       await tester.pumpWidget(createWidgetUnderTest());
+      await tester.pumpAndSettle();
+
+      // Ensure the toolbar is visible
+      final clearButton = find.byTooltip('Clear logs');
+      await tester.ensureVisible(clearButton);
+      await tester.pumpAndSettle();
 
       // Tap the clear button
-      await tester.tap(find.byTooltip('Clear logs'));
+      await tester.tap(clearButton);
       await tester.pumpAndSettle();
 
       // Confirm in the dialog
@@ -88,8 +96,13 @@ void main() {
 
     testWidgets('auto-scroll toggle triggers ToggleAutoScroll event', (tester) async {
       await tester.pumpWidget(createWidgetUnderTest());
+      await tester.pumpAndSettle();
 
-      await tester.tap(find.byTooltip('Pause auto-scroll'));
+      final autoScrollButton = find.byTooltip('Pause auto-scroll');
+      await tester.ensureVisible(autoScrollButton);
+      await tester.pumpAndSettle();
+
+      await tester.tap(autoScrollButton);
       await tester.pump();
 
       verify(mockLogBloc.add(argThat(isA<ToggleAutoScroll>()))).called(1);
@@ -119,13 +132,18 @@ void main() {
 
     testWidgets('test log button generates test log', (tester) async {
       await tester.pumpWidget(createWidgetUnderTest());
+      await tester.pumpAndSettle();
 
       // Find the test log button by tooltip
       final testLogButton = find.byTooltip('Generate test log');
       expect(testLogButton, findsOneWidget);
 
+      // Ensure the button is visible
+      await tester.ensureVisible(testLogButton);
+      await tester.pumpAndSettle();
+
       await tester.tap(testLogButton);
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       verify(mockLogBloc.add(argThat(isA<LogReceived>().having((e) => e.log.message, 'message', contains('Test log generated from UI'))))).called(1);
 
