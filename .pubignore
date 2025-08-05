@@ -1,0 +1,23 @@
+# IDE files
+.idea/
+.vscode/
+*.iml
+
+# Mason files
+.mason/
+mason-lock.json
+
+# Build artifacts
+build/
+.dart_tool/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# Local configuration
+local.properties
