@@ -1,3 +1,7 @@
+## 0.0.5
+
+* aligned versions to match (logging => dev tools)
+  
 ## 0.0.4
 
 * bumped dev tools extension version
