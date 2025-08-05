@@ -1,3 +1,7 @@
+## 0.0.6
+
+* fixed .gitignore to allow build folder for dev tools output
+
 ## 0.0.5
 
 * aligned versions to match (logging => dev tools)
