@@ -27,8 +27,6 @@ doc/api/
 # EXCEPTION: Keep DevTools extension JS files (critical for publishing)
 !extension/devtools/build/*.js
 !extension/devtools/build/*.js.map
-!extension/devtools/build/flutter.js
-!extension/devtools/build/flutter_bootstrap.js
 
 # Flutter plugins
 .flutter-plugins
@@ -43,12 +41,6 @@ extension/devtools/.packages
 # CRITICAL: Do NOT ignore these - they're needed for the published package
 # extension/devtools/build/        <- This line is commented out intentionally
 # extension/devtools/config.yaml   <- This line is commented out intentionally
-
-# Web build artifacts (except DevTools extension)
-web/build/
-# But keep the web config files
-!web/index.html
-!web/manifest.json
 
 # IDE files
 .vscode/
@@ -87,11 +79,3 @@ example/.flutter-plugins-dependencies
 
 # Local configuration
 local.properties
-
-# Don't ignore these critical DevTools files:
-# ✅ extension/devtools/build/ - Contains compiled extension
-# ✅ extension/devtools/config.yaml - Extension configuration
-# ✅ extension/devtools/build/*.js - Compiled JavaScript
-# ✅ extension/devtools/build/*.js.map - Source maps
-# ✅ web/index.html - Web configuration for proper rendering
-# ✅ web/manifest.json - Web manifest
