@@ -3,13 +3,21 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i4;
+import 'dart:async' as _i5;
 
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i9;
+import 'package:voo_logging/core/domain/enums/log_level.dart' as _i8;
+import 'package:voo_logging/features/logging/domain/entities/log_entry.dart'
+    as _i7;
+import 'package:voo_logging/features/logging/domain/entities/voo_logger_interface.dart'
+    as _i6;
+import 'package:voo_logging/features/logging/domain/repositories/logger_repository.dart'
+    as _i3;
 import 'package:voo_logging/features/session_replay/domain/entities/session_recording.dart'
     as _i2;
 import 'package:voo_logging/features/session_replay/domain/repositories/session_recording_repository.dart'
-    as _i3;
+    as _i4;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -31,22 +39,34 @@ class _FakeSessionRecording_0 extends _i1.SmartFake
     : super(parent, parentInvocation);
 }
 
+class _FakeLoggerRepository_1 extends _i1.SmartFake
+    implements _i3.LoggerRepository {
+  _FakeLoggerRepository_1(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeSessionRecordingRepository_2 extends _i1.SmartFake
+    implements _i4.SessionRecordingRepository {
+  _FakeSessionRecordingRepository_2(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
 /// A class which mocks [SessionRecordingRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockSessionRecordingRepository extends _i1.Mock
-    implements _i3.SessionRecordingRepository {
+    implements _i4.SessionRecordingRepository {
   MockSessionRecordingRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Stream<_i2.SessionRecording> get recordingStream =>
+  _i5.Stream<_i2.SessionRecording> get recordingStream =>
       (super.noSuchMethod(
             Invocation.getter(#recordingStream),
-            returnValue: _i4.Stream<_i2.SessionRecording>.empty(),
+            returnValue: _i5.Stream<_i2.SessionRecording>.empty(),
           )
-          as _i4.Stream<_i2.SessionRecording>);
+          as _i5.Stream<_i2.SessionRecording>);
 
   @override
   bool get isRecording =>
@@ -54,7 +74,7 @@ class MockSessionRecordingRepository extends _i1.Mock
           as bool);
 
   @override
-  _i4.Future<void> startRecording({
+  _i5.Future<void> startRecording({
     required String? sessionId,
     required String? userId,
     Map<String, dynamic>? metadata,
@@ -65,57 +85,57 @@ class MockSessionRecordingRepository extends _i1.Mock
               #userId: userId,
               #metadata: metadata,
             }),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i4.Future<void> stopRecording() =>
+  _i5.Future<void> stopRecording() =>
       (super.noSuchMethod(
             Invocation.method(#stopRecording, []),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i4.Future<void> pauseRecording() =>
+  _i5.Future<void> pauseRecording() =>
       (super.noSuchMethod(
             Invocation.method(#pauseRecording, []),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i4.Future<void> resumeRecording() =>
+  _i5.Future<void> resumeRecording() =>
       (super.noSuchMethod(
             Invocation.method(#resumeRecording, []),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i4.Future<void> addEvent(_i2.SessionEvent? event) =>
+  _i5.Future<void> addEvent(_i2.SessionEvent? event) =>
       (super.noSuchMethod(
             Invocation.method(#addEvent, [event]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i4.Future<_i2.SessionRecording?> getCurrentRecording() =>
+  _i5.Future<_i2.SessionRecording?> getCurrentRecording() =>
       (super.noSuchMethod(
             Invocation.method(#getCurrentRecording, []),
-            returnValue: _i4.Future<_i2.SessionRecording?>.value(),
+            returnValue: _i5.Future<_i2.SessionRecording?>.value(),
           )
-          as _i4.Future<_i2.SessionRecording?>);
+          as _i5.Future<_i2.SessionRecording?>);
 
   @override
-  _i4.Future<List<_i2.SessionRecording>> getRecordings({
+  _i5.Future<List<_i2.SessionRecording>> getRecordings({
     String? userId,
     DateTime? startDate,
     DateTime? endDate,
@@ -128,65 +148,669 @@ class MockSessionRecordingRepository extends _i1.Mock
               #endDate: endDate,
               #limit: limit,
             }),
-            returnValue: _i4.Future<List<_i2.SessionRecording>>.value(
+            returnValue: _i5.Future<List<_i2.SessionRecording>>.value(
               <_i2.SessionRecording>[],
             ),
           )
-          as _i4.Future<List<_i2.SessionRecording>>);
+          as _i5.Future<List<_i2.SessionRecording>>);
 
   @override
-  _i4.Future<_i2.SessionRecording?> getRecording(String? id) =>
+  _i5.Future<_i2.SessionRecording?> getRecording(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#getRecording, [id]),
-            returnValue: _i4.Future<_i2.SessionRecording?>.value(),
+            returnValue: _i5.Future<_i2.SessionRecording?>.value(),
           )
-          as _i4.Future<_i2.SessionRecording?>);
+          as _i5.Future<_i2.SessionRecording?>);
 
   @override
-  _i4.Future<void> deleteRecording(String? id) =>
+  _i5.Future<void> deleteRecording(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteRecording, [id]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i4.Future<void> deleteOldRecordings(Duration? age) =>
+  _i5.Future<void> deleteOldRecordings(Duration? age) =>
       (super.noSuchMethod(
             Invocation.method(#deleteOldRecordings, [age]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i4.Future<int> getTotalStorageSize() =>
+  _i5.Future<int> getTotalStorageSize() =>
       (super.noSuchMethod(
             Invocation.method(#getTotalStorageSize, []),
-            returnValue: _i4.Future<int>.value(0),
+            returnValue: _i5.Future<int>.value(0),
           )
-          as _i4.Future<int>);
+          as _i5.Future<int>);
 
   @override
-  _i4.Future<void> exportRecording(String? id, String? filePath) =>
+  _i5.Future<void> exportRecording(String? id, String? filePath) =>
       (super.noSuchMethod(
             Invocation.method(#exportRecording, [id, filePath]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i4.Future<_i2.SessionRecording> importRecording(String? filePath) =>
+  _i5.Future<_i2.SessionRecording> importRecording(String? filePath) =>
       (super.noSuchMethod(
             Invocation.method(#importRecording, [filePath]),
-            returnValue: _i4.Future<_i2.SessionRecording>.value(
+            returnValue: _i5.Future<_i2.SessionRecording>.value(
               _FakeSessionRecording_0(
                 this,
                 Invocation.method(#importRecording, [filePath]),
               ),
             ),
           )
-          as _i4.Future<_i2.SessionRecording>);
+          as _i5.Future<_i2.SessionRecording>);
+}
+
+/// A class which mocks [VooLoggerInterface].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockVooLoggerInterface extends _i1.Mock
+    implements _i6.VooLoggerInterface {
+  MockVooLoggerInterface() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i5.Stream<_i7.LogEntry> get stream =>
+      (super.noSuchMethod(
+            Invocation.getter(#stream),
+            returnValue: _i5.Stream<_i7.LogEntry>.empty(),
+          )
+          as _i5.Stream<_i7.LogEntry>);
+
+  @override
+  _i3.LoggerRepository get repository =>
+      (super.noSuchMethod(
+            Invocation.getter(#repository),
+            returnValue: _FakeLoggerRepository_1(
+              this,
+              Invocation.getter(#repository),
+            ),
+          )
+          as _i3.LoggerRepository);
+
+  @override
+  _i4.SessionRecordingRepository get sessionRecorder =>
+      (super.noSuchMethod(
+            Invocation.getter(#sessionRecorder),
+            returnValue: _FakeSessionRecordingRepository_2(
+              this,
+              Invocation.getter(#sessionRecorder),
+            ),
+          )
+          as _i4.SessionRecordingRepository);
+
+  @override
+  bool get isRecordingSession =>
+      (super.noSuchMethod(
+            Invocation.getter(#isRecordingSession),
+            returnValue: false,
+          )
+          as bool);
+
+  @override
+  _i5.Future<void> initialize({
+    String? appName,
+    String? appVersion,
+    String? userId,
+    _i8.LogLevel? minimumLevel = _i8.LogLevel.verbose,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#initialize, [], {
+              #appName: appName,
+              #appVersion: appVersion,
+              #userId: userId,
+              #minimumLevel: minimumLevel,
+            }),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> verbose(
+    String? message, {
+    String? category,
+    String? tag,
+    Map<String, dynamic>? metadata,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #verbose,
+              [message],
+              {#category: category, #tag: tag, #metadata: metadata},
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> debug(
+    String? message, {
+    String? category,
+    String? tag,
+    Map<String, dynamic>? metadata,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #debug,
+              [message],
+              {#category: category, #tag: tag, #metadata: metadata},
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> info(
+    String? message, {
+    String? category,
+    String? tag,
+    Map<String, dynamic>? metadata,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #info,
+              [message],
+              {#category: category, #tag: tag, #metadata: metadata},
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> warning(
+    String? message, {
+    String? category,
+    String? tag,
+    Map<String, dynamic>? metadata,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #warning,
+              [message],
+              {#category: category, #tag: tag, #metadata: metadata},
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> error(
+    String? message, {
+    String? category,
+    String? tag,
+    Map<String, dynamic>? metadata,
+    Object? error,
+    StackTrace? stackTrace,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #error,
+              [message],
+              {
+                #category: category,
+                #tag: tag,
+                #metadata: metadata,
+                #error: error,
+                #stackTrace: stackTrace,
+              },
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> fatal(
+    String? message, {
+    String? category,
+    String? tag,
+    Map<String, dynamic>? metadata,
+    Object? error,
+    StackTrace? stackTrace,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #fatal,
+              [message],
+              {
+                #category: category,
+                #tag: tag,
+                #metadata: metadata,
+                #error: error,
+                #stackTrace: stackTrace,
+              },
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> log(
+    String? message, {
+    required _i8.LogLevel? level,
+    String? category,
+    String? tag,
+    Map<String, dynamic>? metadata,
+    Object? error,
+    StackTrace? stackTrace,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #log,
+              [message],
+              {
+                #level: level,
+                #category: category,
+                #tag: tag,
+                #metadata: metadata,
+                #error: error,
+                #stackTrace: stackTrace,
+              },
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> startSessionRecording({
+    required String? sessionId,
+    required String? userId,
+    Map<String, dynamic>? metadata,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#startSessionRecording, [], {
+              #sessionId: sessionId,
+              #userId: userId,
+              #metadata: metadata,
+            }),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> stopSessionRecording() =>
+      (super.noSuchMethod(
+            Invocation.method(#stopSessionRecording, []),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> pauseSessionRecording() =>
+      (super.noSuchMethod(
+            Invocation.method(#pauseSessionRecording, []),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> resumeSessionRecording() =>
+      (super.noSuchMethod(
+            Invocation.method(#resumeSessionRecording, []),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  void clearCache() => super.noSuchMethod(
+    Invocation.method(#clearCache, []),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  _i5.Future<List<_i7.LogEntry>> getLogsByLevel(_i8.LogLevel? level) =>
+      (super.noSuchMethod(
+            Invocation.method(#getLogsByLevel, [level]),
+            returnValue: _i5.Future<List<_i7.LogEntry>>.value(<_i7.LogEntry>[]),
+          )
+          as _i5.Future<List<_i7.LogEntry>>);
+
+  @override
+  _i5.Future<List<_i7.LogEntry>> getLogsByTimeRange(
+    DateTime? start,
+    DateTime? end,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#getLogsByTimeRange, [start, end]),
+            returnValue: _i5.Future<List<_i7.LogEntry>>.value(<_i7.LogEntry>[]),
+          )
+          as _i5.Future<List<_i7.LogEntry>>);
+
+  @override
+  _i5.Future<List<_i7.LogEntry>> searchLogs(String? query) =>
+      (super.noSuchMethod(
+            Invocation.method(#searchLogs, [query]),
+            returnValue: _i5.Future<List<_i7.LogEntry>>.value(<_i7.LogEntry>[]),
+          )
+          as _i5.Future<List<_i7.LogEntry>>);
+
+  @override
+  _i5.Future<void> exportLogs(String? filePath) =>
+      (super.noSuchMethod(
+            Invocation.method(#exportLogs, [filePath]),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> deleteOldLogs({Duration? olderThan}) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteOldLogs, [], {#olderThan: olderThan}),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+}
+
+/// A class which mocks [LoggerRepository].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockLoggerRepository extends _i1.Mock implements _i3.LoggerRepository {
+  MockLoggerRepository() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i5.Stream<_i7.LogEntry> get stream =>
+      (super.noSuchMethod(
+            Invocation.getter(#stream),
+            returnValue: _i5.Stream<_i7.LogEntry>.empty(),
+          )
+          as _i5.Stream<_i7.LogEntry>);
+
+  @override
+  String get sessionId =>
+      (super.noSuchMethod(
+            Invocation.getter(#sessionId),
+            returnValue: _i9.dummyValue<String>(
+              this,
+              Invocation.getter(#sessionId),
+            ),
+          )
+          as String);
+
+  @override
+  _i5.Future<void> initialize({
+    String? appName,
+    String? appVersion,
+    String? userId,
+    _i8.LogLevel? minimumLevel = _i8.LogLevel.verbose,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#initialize, [], {
+              #appName: appName,
+              #appVersion: appVersion,
+              #userId: userId,
+              #minimumLevel: minimumLevel,
+            }),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> verbose(
+    String? message, {
+    String? category,
+    String? tag,
+    Map<String, dynamic>? metadata,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #verbose,
+              [message],
+              {#category: category, #tag: tag, #metadata: metadata},
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> debug(
+    String? message, {
+    String? category,
+    String? tag,
+    Map<String, dynamic>? metadata,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #debug,
+              [message],
+              {#category: category, #tag: tag, #metadata: metadata},
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> info(
+    String? message, {
+    String? category,
+    String? tag,
+    Map<String, dynamic>? metadata,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #info,
+              [message],
+              {#category: category, #tag: tag, #metadata: metadata},
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> warning(
+    String? message, {
+    String? category,
+    String? tag,
+    Map<String, dynamic>? metadata,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #warning,
+              [message],
+              {#category: category, #tag: tag, #metadata: metadata},
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> error(
+    String? message, {
+    Object? error,
+    StackTrace? stackTrace,
+    String? category,
+    String? tag,
+    Map<String, dynamic>? metadata,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #error,
+              [message],
+              {
+                #error: error,
+                #stackTrace: stackTrace,
+                #category: category,
+                #tag: tag,
+                #metadata: metadata,
+              },
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<dynamic> getStatistics() =>
+      (super.noSuchMethod(
+            Invocation.method(#getStatistics, []),
+            returnValue: _i5.Future<dynamic>.value(),
+          )
+          as _i5.Future<dynamic>);
+
+  @override
+  _i5.Future<dynamic> exportLogs() =>
+      (super.noSuchMethod(
+            Invocation.method(#exportLogs, []),
+            returnValue: _i5.Future<dynamic>.value(),
+          )
+          as _i5.Future<dynamic>);
+
+  @override
+  _i5.Future<void> clearLogs() =>
+      (super.noSuchMethod(
+            Invocation.method(#clearLogs, []),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  void setUserId(String? newUserId) => super.noSuchMethod(
+    Invocation.method(#setUserId, [newUserId]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void startNewSession() => super.noSuchMethod(
+    Invocation.method(#startNewSession, []),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  _i5.Future<void> networkResponse(
+    int? i,
+    String? s,
+    Duration? duration, {
+    Map<String, String>? headers,
+    int? contentLength,
+    Map<String, Object>? metadata,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #networkResponse,
+              [i, s, duration],
+              {
+                #headers: headers,
+                #contentLength: contentLength,
+                #metadata: metadata,
+              },
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  void performance(
+    String? s,
+    Duration? duration, {
+    Map<String, Object>? metrics,
+  }) => super.noSuchMethod(
+    Invocation.method(#performance, [s, duration], {#metrics: metrics}),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void userAction(
+    String? s, {
+    String? screen,
+    Map<String, Object>? properties,
+  }) => super.noSuchMethod(
+    Invocation.method(
+      #userAction,
+      [s],
+      {#screen: screen, #properties: properties},
+    ),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  _i5.Future<void> fatal(
+    String? message, {
+    Object? error,
+    StackTrace? stackTrace,
+    String? category,
+    String? tag,
+    Map<String, dynamic>? metadata,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #fatal,
+              [message],
+              {
+                #error: error,
+                #stackTrace: stackTrace,
+                #category: category,
+                #tag: tag,
+                #metadata: metadata,
+              },
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  void log(
+    String? s, {
+    _i8.LogLevel? level,
+    String? category,
+    Map<String, Object>? metadata,
+    String? tag,
+  }) => super.noSuchMethod(
+    Invocation.method(
+      #log,
+      [s],
+      {#level: level, #category: category, #metadata: metadata, #tag: tag},
+    ),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  _i5.Future<void> networkRequest(
+    String? s,
+    String? t, {
+    Map<String, String>? headers,
+    Map<String, String>? metadata,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #networkRequest,
+              [s, t],
+              {#headers: headers, #metadata: metadata},
+            ),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
 }

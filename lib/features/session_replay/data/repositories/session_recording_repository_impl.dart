@@ -11,6 +11,7 @@ import 'package:voo_logging/features/session_replay/domain/repositories/session_
 
 class SessionRecordingRepositoryImpl implements SessionRecordingRepository {
   final SessionRecordingStorage _storage;
+  final Stream<LogEntry>? _logStream;
   final _uuid = const Uuid();
   
   SessionRecording? _currentRecording;
@@ -20,8 +21,11 @@ class SessionRecordingRepositoryImpl implements SessionRecordingRepository {
   
   final _recordingController = StreamController<SessionRecording>.broadcast();
 
-  SessionRecordingRepositoryImpl({SessionRecordingStorage? storage})
-      : _storage = storage ?? SessionRecordingStorage();
+  SessionRecordingRepositoryImpl({
+    SessionRecordingStorage? storage,
+    Stream<LogEntry>? logStream,
+  }) : _storage = storage ?? SessionRecordingStorage(),
+       _logStream = logStream;
 
   @override
   Future<void> startRecording({
@@ -45,8 +49,9 @@ class SessionRecordingRepositoryImpl implements SessionRecordingRepository {
       sizeInBytes: 0,
     );
 
-    // Subscribe to log stream
-    _logSubscription = VooLogger.instance.stream.listen((logEntry) {
+    // Subscribe to log stream if provided
+    final streamToUse = _logStream ?? VooLogger.instance.stream;
+    _logSubscription = streamToUse.listen((logEntry) {
       if (_currentRecording?.status == SessionStatus.recording) {
         addEvent(LogEvent(
           timestamp: logEntry.timestamp,
@@ -124,7 +129,7 @@ class SessionRecordingRepositoryImpl implements SessionRecordingRepository {
   }
 
   Future<void> _savePendingEvents() async {
-    if (_currentRecording == null || _pendingEvents.isEmpty) return;
+    if (_currentRecording == null) return;
 
     try {
       // Add pending events to current recording

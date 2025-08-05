@@ -66,10 +66,11 @@ void main() {
       });
 
       test('should query sessions with filters', () async {
-        // Create multiple test sessions
-        final session1 = _createTestSession(id: 'session1', userId: 'user1');
-        final session2 = _createTestSession(id: 'session2', userId: 'user2');
-        final session3 = _createTestSession(id: 'session3', userId: 'user1');
+        // Create multiple test sessions with different start times
+        final now = DateTime.now();
+        final session1 = _createTestSession(id: 'session1', userId: 'user1', startTime: now.subtract(Duration(seconds: 2)));
+        final session2 = _createTestSession(id: 'session2', userId: 'user2', startTime: now.subtract(Duration(seconds: 1)));
+        final session3 = _createTestSession(id: 'session3', userId: 'user1', startTime: now);
 
         await storage.saveSession(session1);
         await storage.saveSession(session2);
@@ -87,14 +88,8 @@ void main() {
 
       test('should delete old sessions', () async {
         // Create sessions with different ages
-        final oldSession = _createTestSession(
-          id: 'old',
-          startTime: DateTime.now().subtract(Duration(days: 10)),
-        );
-        final recentSession = _createTestSession(
-          id: 'recent',
-          startTime: DateTime.now().subtract(Duration(hours: 1)),
-        );
+        final oldSession = _createTestSession(id: 'old', startTime: DateTime.now().subtract(Duration(days: 10)));
+        final recentSession = _createTestSession(id: 'recent', startTime: DateTime.now().subtract(Duration(hours: 1)));
 
         await storage.saveSession(oldSession);
         await storage.saveSession(recentSession);
@@ -122,15 +117,11 @@ void main() {
         expect(retrievedSession!.events.length, equals(session.events.length));
 
         // Check that events are correctly parsed
-        final logEvent = retrievedSession.events
-            .whereType<LogEvent>()
-            .first;
+        final logEvent = retrievedSession.events.whereType<LogEvent>().first;
         expect(logEvent.logEntry.message, equals('Test log message'));
         expect(logEvent.logEntry.level, equals(LogLevel.info));
 
-        final userActionEvent = retrievedSession.events
-            .whereType<UserActionEvent>()
-            .first;
+        final userActionEvent = retrievedSession.events.whereType<UserActionEvent>().first;
         expect(userActionEvent.action, equals('button_tap'));
         expect(userActionEvent.screen, equals('home'));
       });
@@ -139,37 +130,12 @@ void main() {
         final events = [
           LogEvent(
             timestamp: DateTime.now(),
-            logEntry: LogEntry(
-              id: 'log-1',
-              timestamp: DateTime.now(),
-              message: 'Test message',
-              level: LogLevel.error,
-            ),
+            logEntry: LogEntry(id: 'log-1', timestamp: DateTime.now(), message: 'Test message', level: LogLevel.error),
           ),
-          UserActionEvent(
-            timestamp: DateTime.now(),
-            action: 'swipe',
-            screen: 'gallery',
-            properties: {'direction': 'left'},
-          ),
-          NetworkEvent(
-            timestamp: DateTime.now(),
-            method: 'POST',
-            url: 'https://api.test.com/data',
-            statusCode: 201,
-            duration: Duration(milliseconds: 300),
-          ),
-          ScreenNavigationEvent(
-            timestamp: DateTime.now(),
-            fromScreen: 'home',
-            toScreen: 'settings',
-            parameters: {'tab': 'privacy'},
-          ),
-          AppStateEvent(
-            timestamp: DateTime.now(),
-            state: 'paused',
-            details: {'reason': 'incoming_call'},
-          ),
+          UserActionEvent(timestamp: DateTime.now(), action: 'swipe', screen: 'gallery', properties: {'direction': 'left'}),
+          NetworkEvent(timestamp: DateTime.now(), method: 'POST', url: 'https://api.test.com/data', statusCode: 201, duration: Duration(milliseconds: 300)),
+          ScreenNavigationEvent(timestamp: DateTime.now(), fromScreen: 'home', toScreen: 'settings', parameters: {'tab': 'privacy'}),
+          AppStateEvent(timestamp: DateTime.now(), state: 'paused', details: {'reason': 'incoming_call'}),
         ];
 
         final session = SessionRecording(
@@ -208,7 +174,7 @@ void main() {
         expect(exportData['version'], equals(1));
         expect(exportData['exportDate'], isNotNull);
         expect(exportData['session'], isNotNull);
-        
+
         final sessionData = exportData['session'] as Map<String, dynamic>;
         expect(sessionData['id'], equals(session.id));
         expect(sessionData['events'], isA<List>());
@@ -244,17 +210,15 @@ void main() {
       });
 
       test('should throw exception when exporting non-existent session', () async {
-        expect(
-          () => storage.exportSession('non-existent'),
-          throwsException,
-        );
+        expect(() => storage.exportSession('non-existent'), throwsException);
       });
     });
 
     group('Storage Management', () {
       test('should calculate total storage size', () async {
-        final session1 = _createTestSession(sizeInBytes: 1024);
-        final session2 = _createTestSession(id: 'session2', sizeInBytes: 2048);
+        final now = DateTime.now();
+        final session1 = _createTestSession(sizeInBytes: 1024, startTime: now.subtract(Duration(seconds: 1)));
+        final session2 = _createTestSession(id: 'session2', sizeInBytes: 2048, startTime: now);
 
         await storage.saveSession(session1);
         await storage.saveSession(session2);
@@ -267,12 +231,7 @@ void main() {
   });
 }
 
-SessionRecording _createTestSession({
-  String id = 'test-session',
-  String userId = 'test-user',
-  DateTime? startTime,
-  int sizeInBytes = 0,
-}) {
+SessionRecording _createTestSession({String id = 'test-session', String userId = 'test-user', DateTime? startTime, int sizeInBytes = 0}) {
   return SessionRecording(
     id: id,
     sessionId: 'session-123',
@@ -289,20 +248,9 @@ SessionRecording _createTestSessionWithEvents() {
   final events = [
     LogEvent(
       timestamp: DateTime.now(),
-      logEntry: LogEntry(
-        id: 'log-1',
-        timestamp: DateTime.now(),
-        message: 'Test log message',
-        level: LogLevel.info,
-        category: 'test',
-      ),
+      logEntry: LogEntry(id: 'log-1', timestamp: DateTime.now(), message: 'Test log message', level: LogLevel.info, category: 'test'),
     ),
-    UserActionEvent(
-      timestamp: DateTime.now(),
-      action: 'button_tap',
-      screen: 'home',
-      properties: {'button_id': 'submit'},
-    ),
+    UserActionEvent(timestamp: DateTime.now(), action: 'button_tap', screen: 'home', properties: {'button_id': 'submit'}),
   ];
 
   return SessionRecording(

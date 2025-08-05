@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:voo_logging/features/logging/domain/entities/voo_logger.dart';
+import 'package:voo_logging/features/logging/domain/entities/voo_logger_interface.dart';
 import 'package:voo_logging/features/session_replay/domain/entities/session_recording.dart';
+import 'package:voo_logging/features/session_replay/domain/repositories/session_recording_repository.dart';
 
 /// Provides easy-to-use methods for tracking session events
 class SessionReplayTracker {
   static SessionReplayTracker? _instance;
   static String? _currentScreen;
+  static VooLoggerInterface? _logger;
+  static SessionRecordingRepository? _sessionRecorder;
   
   factory SessionReplayTracker() {
     _instance ??= SessionReplayTracker._internal();
@@ -13,6 +17,25 @@ class SessionReplayTracker {
   }
   
   SessionReplayTracker._internal();
+  
+  /// Set a custom logger instance (for testing)
+  static void setLogger(VooLoggerInterface logger) {
+    _logger = logger;
+  }
+  
+  /// Set a custom session recorder (for testing)
+  static void setSessionRecorder(SessionRecordingRepository recorder) {
+    _sessionRecorder = recorder;
+  }
+  
+  /// Reset to default implementations
+  static void reset() {
+    _logger = null;
+    _sessionRecorder = null;
+  }
+  
+  static VooLoggerInterface get _currentLogger => _logger ?? VooLogger.logger;
+  static SessionRecordingRepository get _currentRecorder => _sessionRecorder ?? _currentLogger.sessionRecorder;
 
   /// Track a user action
   static Future<void> trackUserAction(
@@ -20,9 +43,9 @@ class SessionReplayTracker {
     String? screen,
     Map<String, dynamic>? properties,
   }) async {
-    if (!VooLogger.isRecordingSession) return;
+    if (!_currentLogger.isRecordingSession) return;
     
-    await VooLogger.instance.sessionRecorder.addEvent(
+    await _currentRecorder.addEvent(
       UserActionEvent(
         timestamp: DateTime.now(),
         action: action,
@@ -34,9 +57,9 @@ class SessionReplayTracker {
 
   /// Track a screen navigation
   static Future<void> trackNavigation(String toScreen, {String? fromScreen, Map<String, dynamic>? parameters}) async {
-    if (!VooLogger.isRecordingSession) return;
+    if (!_currentLogger.isRecordingSession) return;
     
-    await VooLogger.instance.sessionRecorder.addEvent(
+    await _currentRecorder.addEvent(
       ScreenNavigationEvent(
         timestamp: DateTime.now(),
         fromScreen: fromScreen ?? _currentScreen ?? 'unknown',
@@ -55,9 +78,9 @@ class SessionReplayTracker {
     Map<String, String>? headers,
     Map<String, dynamic>? metadata,
   }) async {
-    if (!VooLogger.isRecordingSession) return;
+    if (!_currentLogger.isRecordingSession) return;
     
-    await VooLogger.instance.sessionRecorder.addEvent(
+    await _currentRecorder.addEvent(
       NetworkEvent(
         timestamp: DateTime.now(),
         method: method,
@@ -77,9 +100,9 @@ class SessionReplayTracker {
     Map<String, String>? headers,
     Map<String, dynamic>? metadata,
   }) async {
-    if (!VooLogger.isRecordingSession) return;
+    if (!_currentLogger.isRecordingSession) return;
     
-    await VooLogger.instance.sessionRecorder.addEvent(
+    await _currentRecorder.addEvent(
       NetworkEvent(
         timestamp: DateTime.now(),
         method: method,
@@ -94,9 +117,9 @@ class SessionReplayTracker {
 
   /// Track app state changes
   static Future<void> trackAppState(String state, {Map<String, dynamic>? details}) async {
-    if (!VooLogger.isRecordingSession) return;
+    if (!_currentLogger.isRecordingSession) return;
     
-    await VooLogger.instance.sessionRecorder.addEvent(
+    await _currentRecorder.addEvent(
       AppStateEvent(
         timestamp: DateTime.now(),
         state: state,
